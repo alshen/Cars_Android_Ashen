@@ -5,6 +5,8 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -27,6 +30,11 @@ public class Main extends Activity implements JsonLoader.OnTaskCompleted{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "Internet access is not available", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -61,6 +69,13 @@ public class Main extends Activity implements JsonLoader.OnTaskCompleted{
         JsonLoader json = new JsonLoader(this, this);
         json.loadDatabase();
 
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
