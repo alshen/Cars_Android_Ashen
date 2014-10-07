@@ -51,7 +51,7 @@ public class JsonLoader {
         new HttpAsyncTask().execute(uri);
     }
 
-
+    // TODO: http requests need refactoring, a lot of code duplication
     private class HttpAsyncTask extends AsyncTask<String, Integer, Boolean> {
         // caches the best/worst cars of each year
         private HashMap<Integer, HashSet<String>> mBestCache;
@@ -95,8 +95,11 @@ public class JsonLoader {
                         int     year          = jObj.getInt("year");
                         int     askingPrice   = jObj.getInt("price");
                         int     standardPrice = requestStandardPrice(make, model, year);
-                        boolean bestInYear    = requestBestInYear(make, model, year);
-                        boolean worstInYear   = requestWorstInYear(make, model, year);
+
+                        // TODO: these a hard coded to false because the queries take too long
+                        // and the information is of little value at the moment
+                        boolean bestInYear    = false;//requestBestInYear(make, model, year);
+                        boolean worstInYear   = false;//requestWorstInYear(make, model, year);
 
                         // Insert the new row, returning the primary key value of the new row
                         String uuid = UUID.randomUUID().toString();
