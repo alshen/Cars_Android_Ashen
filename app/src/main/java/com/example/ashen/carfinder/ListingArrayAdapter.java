@@ -1,7 +1,9 @@
 package com.example.ashen.carfinder;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -82,13 +84,31 @@ public class ListingArrayAdapter extends ArrayAdapter {
             priceView.setText(formattedPrice);
 
             // get and set the checkbox that represents a starred (favorite) item
-            CheckBox starred = (CheckBox) view.findViewById(R.id.list_item_starred_checkbox);
+            final CheckBox starred = (CheckBox) view.findViewById(R.id.list_item_starred_checkbox);
             starred.setChecked(carListing.isStarred());
             starred.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     // if the value of this checkbox changes, we perform a call back so the
                     // parent can update the database
                     mOnCheckedChangedCallback.onCheckedChanged(carListing.getUuid(), isChecked);
+                }
+            });
+
+            // increase the touch area of the checkbox, we want to give the user as
+            // much space as possible to prevent miss clicks
+            final View starredParent = (View) starred.getParent();
+            starredParent.post( new Runnable() {
+                // Post in the parent's message queue to make sure the parent
+                // lays out its children before we call getHitRect()
+                public void run() {
+                    // TODO: figure out the best touch area, ideally find a way to view this Rect
+                    final Rect r = new Rect();
+                    starred.getHitRect(r);
+                    r.top -= 25;
+                    r.bottom += 25;
+                    r.left -= 25;
+                    r.right += 25;
+                    starredParent.setTouchDelegate( new TouchDelegate( r , starred));
                 }
             });
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/details_fragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@drawable/list_selector"
     android:padding="10dp">
 
@@ -219,4 +220,5 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/dfr6"
         android:text="Description"/>
+
 </RelativeLayout>
