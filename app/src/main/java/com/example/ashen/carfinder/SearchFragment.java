@@ -66,10 +66,6 @@ public class SearchFragment extends Fragment {
                 String make  = spinner.getSelectedItem().toString();
                 String model = spinner2.getSelectedItem().toString();
 
-                //TODO: this wildcard doesn't seem to work with the where statement
-                if (make.equals("ALL")) make = "*";
-                if (model.equals("ALL")) model = "*";
-
                 if (minPrice > maxPrice) {
                     Toast.makeText(view.getContext(), "Minimum Price must be lower than Maximum Price", Toast.LENGTH_SHORT).show();
                     return;

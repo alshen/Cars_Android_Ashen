@@ -315,12 +315,30 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      */
     public List<CarListing> getCarListings(String make, String model, int minPrice, int maxPrice) {
         // TODO: BUG this query does not handle the ALL case for makes/models
-        final String SQL_SELECT_CAR_LISTINGS_QUERY = "" +
-                "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
-                " AND " + ListingContract.ListingEntry.KEY_MODEL + " = \'" + model + "\'" +
-                " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE + " BETWEEN " + minPrice + " AND " + maxPrice
-                + " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
+        String SQL_SELECT_CAR_LISTINGS_QUERY;
+        if (make.equals("ALL")) {
+            // if make == All then model must also == ALL
+            SQL_SELECT_CAR_LISTINGS_QUERY =
+                    "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
+                            " WHERE " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
+                            " BETWEEN " + minPrice + " AND " + maxPrice +
+                            " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
+        } else if (model.equals("ALL")) {
+            SQL_SELECT_CAR_LISTINGS_QUERY =
+                    "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
+                    " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
+                    " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
+                    " BETWEEN " + minPrice  + " AND " + maxPrice +
+                    " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
+        } else {
+            SQL_SELECT_CAR_LISTINGS_QUERY =
+                    "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
+                    " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
+                    " AND " + ListingContract.ListingEntry.KEY_MODEL + " = \'" + model + "\'" +
+                    " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
+                    " BETWEEN " + minPrice + " AND " + maxPrice +
+                    " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
+        }
         List<CarListing> carListings = new ArrayList<CarListing>();
 
         SQLiteDatabase db = getReadableDatabase();
