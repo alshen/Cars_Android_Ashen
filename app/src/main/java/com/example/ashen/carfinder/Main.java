@@ -87,59 +87,42 @@ public class Main extends Activity implements JsonLoader.OnTaskCompleted{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentManager fragMgr = getFragmentManager();
+        FragmentTransaction transaction = fragMgr.beginTransaction();
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_search) {
-            FragmentManager fragMgr = getFragmentManager();
-            FragmentTransaction transaction = fragMgr.beginTransaction();
-
+            SearchFragment newFragment;
             if (null == fragMgr.findFragmentByTag("search_frag")) {
-                SearchFragment newFragment = new SearchFragment();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.container, newFragment, "search_frag");
-                transaction.addToBackStack(null);
-
-                // Commit the transaction
-                transaction.commit();
+                newFragment = new SearchFragment();
             } else {
-                SearchFragment newFragment = (SearchFragment) fragMgr.findFragmentByTag("search_frag");
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.container, newFragment, "search_frag");
-                transaction.addToBackStack(null);
-
-                // Commit the transaction
-                transaction.commit();
+                newFragment = (SearchFragment) fragMgr.findFragmentByTag("search_frag");
             }
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack so the user can navigate back
+            transaction.replace(R.id.container, newFragment, "search_frag");
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();
             return true;
         } else if (id == R.id.action_starred) {
-            FragmentManager fragMgr = getFragmentManager();
-            FragmentTransaction transaction = fragMgr.beginTransaction();
-
+            FavoritesFragment newFragment;
             if (null == fragMgr.findFragmentByTag("fav_frag")) {
-                FavoritesFragment newFragment = new FavoritesFragment();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.container, newFragment, "fav_frag");
-                transaction.addToBackStack(null);
-
-                // Commit the transaction
-                transaction.commit();
+                newFragment = new FavoritesFragment();
             } else {
-                FavoritesFragment newFragment = (FavoritesFragment) fragMgr.findFragmentByTag("fav_frag");
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.container, newFragment, "fav_frag");
-                transaction.addToBackStack(null);
-
-                // Commit the transaction
-                transaction.commit();
+                newFragment = (FavoritesFragment) fragMgr.findFragmentByTag("fav_frag");
             }
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack so the user can navigate back
+            transaction.replace(R.id.container, newFragment, "fav_frag");
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -147,18 +130,11 @@ public class Main extends Activity implements JsonLoader.OnTaskCompleted{
 
     public void onTaskCompleted() {
         FragmentManager fragMgr = getFragmentManager();
-        FragmentTransaction transaction = fragMgr.beginTransaction();
-
         if (null == fragMgr.findFragmentByTag("main_frag")) {
-            ListingsFragment newFragment = new ListingsFragment();
-
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
-            transaction.replace(R.id.container, newFragment, "main_frag");
-            transaction.addToBackStack(null);
-
-            // Commit the transaction
-            transaction.commit();
+                fragMgr.beginTransaction()
+                    .replace(R.id.container, new ListingsFragment(), "main_frag")
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 }

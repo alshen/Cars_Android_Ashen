@@ -104,10 +104,10 @@ public class ListingArrayAdapter extends ArrayAdapter {
                     // TODO: figure out the best touch area, ideally find a way to view this Rect
                     final Rect r = new Rect();
                     starred.getHitRect(r);
-                    r.top -= 25;
-                    r.bottom += 25;
-                    r.left -= 25;
-                    r.right += 25;
+                    r.top -= 10;
+                    r.bottom += 10;
+                    r.left -= 10;
+                    r.right += 10;
                     starredParent.setTouchDelegate( new TouchDelegate( r , starred));
                 }
             });
