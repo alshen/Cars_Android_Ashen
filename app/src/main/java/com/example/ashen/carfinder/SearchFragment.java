@@ -58,11 +58,15 @@ public class SearchFragment extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int minPrice = Integer.parseInt(editText1.getText().toString());
-                int maxPrice = Integer.parseInt(editText2.getText().toString());
+                // set the min/max price to either their value or 0 if they are empty
+                String minPriceString = editText1.getText().toString();
+                String maxPriceString = editText2.getText().toString();
+                int minPrice = minPriceString.isEmpty()?  0 : Integer.parseInt(minPriceString);
+                int maxPrice = maxPriceString.isEmpty()?  0: Integer.parseInt(maxPriceString);
                 String make  = spinner.getSelectedItem().toString();
                 String model = spinner2.getSelectedItem().toString();
 
+                //TODO: this wildcard doesn't seem to work with the where statement
                 if (make.equals("ALL")) make = "*";
                 if (model.equals("ALL")) model = "*";
 

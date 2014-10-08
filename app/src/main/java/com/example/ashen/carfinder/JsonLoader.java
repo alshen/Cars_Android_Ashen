@@ -56,7 +56,7 @@ public class JsonLoader {
         // caches the best/worst cars of each year
         private HashMap<Integer, HashSet<String>> mBestCache;
         private HashMap<Integer, HashSet<String>> mWorstCache;
-        //ProgressDialog progressDialog;
+        ProgressDialog progressDialog;
 
         protected HttpAsyncTask() {
             super();
@@ -65,12 +65,12 @@ public class JsonLoader {
         }
 
         protected void onPreExecute() {
-            //progressDialog = new ProgressDialog(mContext);
-            //progressDialog.setTitle("Processing...");
-            //progressDialog.setMessage("Please wait.");
-            //progressDialog.setCancelable(false);
-            //progressDialog.setIndeterminate(true);
-            //progressDialog.show();
+            progressDialog = new ProgressDialog(mContext);
+            progressDialog.setTitle("Processing...");
+            progressDialog.setMessage("Please wait.");
+            progressDialog.setCancelable(false);
+            progressDialog.setIndeterminate(true);
+            progressDialog.show();
         }
 
         protected Boolean doInBackground(String... urls) {
@@ -106,7 +106,6 @@ public class JsonLoader {
                         CarListing carListing = new CarListing(uuid, make, model, image, description,
                                 year, askingPrice, standardPrice, bestInYear, worstInYear, false);
                         long id = mCarsDbHelper.addCarListing(carListing);
-                        Log.e("WORKING", "");
                     }
                     return true;
                 } else {
@@ -122,11 +121,9 @@ public class JsonLoader {
         }
 
         protected void onPostExecute(Boolean result) {
-            //List<CarListing> carListings = mCarsDbHelper.getAllCarListings();
-            //Log.e("MSN", "carListings size: " + carListings.size());
-            /*if (progressDialog !=null) {
+            if (progressDialog != null) {
                 progressDialog.dismiss();
-            }*/
+            }
             mOnTaskCompletedCallback.onTaskCompleted();
         }
 

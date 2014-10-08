@@ -81,14 +81,16 @@
             android:digits="0123456789"
             style="@style/AppTheme"
             android:inputType="number"
-            android:text="0"/>
+            android:maxLength="9"
+            android:hint="0"/>
         <EditText
             android:id="@+id/ed2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="0"
+            android:hint="9000"
             android:digits="0123456789"
+            android:maxLength="9"
             style="@style/AppTheme"
             android:inputType="number"/>
     </LinearLayout>
