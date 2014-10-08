@@ -195,7 +195,8 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      */
     public List<CarListing> getAllCarListings() {
         final String SQL_SELECT_ALL_ENTRIES_QUERY =
-                "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME;
+                "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
+                " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
         List<CarListing> carListings = new ArrayList<CarListing>();
 
         SQLiteDatabase db = getReadableDatabase();
@@ -232,7 +233,8 @@ public class ListingDbHelper extends SQLiteOpenHelper {
     public List<CarListing> getFavoriteCarListings() {
         final String SQL_SELECT_FAVORITE_ENTRIES_QUERY =
                 "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                        " WHERE " + ListingContract.ListingEntry.KEY_STARRED + " = 1";
+                        " WHERE " + ListingContract.ListingEntry.KEY_STARRED + " = 1"  +
+                        " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
         List<CarListing> carListings = new ArrayList<CarListing>();
 
         SQLiteDatabase db = getReadableDatabase();
@@ -317,7 +319,8 @@ public class ListingDbHelper extends SQLiteOpenHelper {
                 "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
                 " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
                 " AND " + ListingContract.ListingEntry.KEY_MODEL + " = \'" + model + "\'" +
-                " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE + " BETWEEN " + minPrice + " AND " + maxPrice;
+                " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE + " BETWEEN " + minPrice + " AND " + maxPrice
+                + " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
         List<CarListing> carListings = new ArrayList<CarListing>();
 
         SQLiteDatabase db = getReadableDatabase();
