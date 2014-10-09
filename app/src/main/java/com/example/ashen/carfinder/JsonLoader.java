@@ -40,17 +40,22 @@ import java.util.UUID;
 public class JsonLoader {
 
     private ListingDbHelper mCarsDbHelper;
-    private Context mContext;
+    private Context         mContext;
     private OnTaskCompleted mOnTaskCompletedCallback;
 
     public JsonLoader(Context context, OnTaskCompleted callback) {
-        this.mCarsDbHelper  = new ListingDbHelper(context);
-        this.mContext = context;
+        this.mCarsDbHelper            = new ListingDbHelper(context);
+        this.mContext                 = context;
         this.mOnTaskCompletedCallback = callback;
     }
 
     public void loadDatabase() {
-        final String url = "https://az-hack.s3.amazonaws.com/CarFinder/available_cars";
+        Uri.Builder builder = new Uri.Builder()
+                .scheme("https")
+                .authority("az-hack.s3.amazonaws.com")
+                .appendPath("CarFinder")
+                .appendPath("available_cars");
+        final String url = builder.build().toString();
 
         final ProgressDialog pDialog = new ProgressDialog(mContext);
         pDialog.setMessage("Loading...");
@@ -64,14 +69,15 @@ public class JsonLoader {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jObj = response.getJSONObject(i);
 
-                                String uuid = UUID.randomUUID().toString();
+                                String uuid        = UUID.randomUUID().toString();
 
-                                String make = jObj.getString("make");
-                                String model = jObj.getString("model");
-                                String image = jObj.getString("image");
+                                String make        = jObj.getString("make");
+                                String model       = jObj.getString("model");
+                                String image       = jObj.getString("image");
                                 String description = jObj.getString("description");
-                                int year = jObj.getInt("year");
-                                int askingPrice = jObj.getInt("price");
+
+                                int year           = jObj.getInt("year");
+                                int askingPrice    = jObj.getInt("price");
 
                                 // TODO: these a hard coded to false because the queries take too long
                                 // and the information is of little value at the moment
@@ -81,10 +87,12 @@ public class JsonLoader {
                                 // Insert the new row
                                 CarListing carListing = new CarListing(uuid, make, model, image,
                                         description, year, askingPrice, 0, false, false, false);
-                                long id = mCarsDbHelper.addCarListing(carListing);
+                                mCarsDbHelper.addCarListing(carListing);
 
                                 // the standard price is updated asynchronously, this way we can
                                 // perform multiple requests at a time
+                                // TODO: the initial rankings may be off depending on when updates
+                                // are completed
                                 requestStandardPrice(uuid, make, model, year);
                             }
                         } catch (JSONException e) {
@@ -97,7 +105,7 @@ public class JsonLoader {
 
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-
+                        // TODO: dialog
                     }
                 });
         AppController.getInstance(mContext).addToRequestQueue(jsonArrayRequest);
@@ -120,6 +128,7 @@ public class JsonLoader {
                     public void onResponse(String response) {
                         // WARNING: parseInt doesn't handle the response string well, probably
                         // due to the EOF token so we trim the response string
+                        // TODO: NumberFormatException if some garbage data is returned from API?
                         int standardPrice = Integer.parseInt(response.trim());
                         mCarsDbHelper.updateCarListingStandardPrice(uuid, standardPrice);
                     }

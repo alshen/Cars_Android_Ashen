@@ -16,6 +16,7 @@ public class SearchResultsFragment extends ListingsFragment {
         View view = inflater.inflate(R.layout.list,
                 container, false);
         ListingDbHelper helper = new ListingDbHelper(view.getContext());
+
         String make = getArguments().getString("make");
         String model = getArguments().getString("model");
         int minPrice = getArguments().getInt("minPrice");
@@ -29,6 +30,7 @@ public class SearchResultsFragment extends ListingsFragment {
                 this,
                 this);
         myList.setAdapter(adapter);
+
         return view;
     }
 }

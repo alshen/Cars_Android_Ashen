@@ -23,6 +23,21 @@ public class ListingDbHelper extends SQLiteOpenHelper {
     private static final String INTEGER_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
 
+    // query constants
+    private static final String[] PROJECTION_COLUMNS = {
+            ListingContract.ListingEntry.KEY_UUID,
+            ListingContract.ListingEntry.KEY_MAKE,
+            ListingContract.ListingEntry.KEY_MODEL,
+            ListingContract.ListingEntry.KEY_IMAGE,
+            ListingContract.ListingEntry.KEY_DESCRIPTION,
+            ListingContract.ListingEntry.KEY_YEAR,
+            ListingContract.ListingEntry.KEY_ASKING_PRICE,
+            ListingContract.ListingEntry.KEY_STANDARD_PRICE,
+            ListingContract.ListingEntry.KEY_BEST,
+            ListingContract.ListingEntry.KEY_WORST,
+            ListingContract.ListingEntry.KEY_STARRED
+    };
+
     public ListingDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -34,7 +49,11 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String SQL_CREATE_ENTRIES =
+        // CREATE TABLE Listings ( _id INTEGER PRIMARY KEY, Uuid TEXT, Make TEXT, Model TEXT,
+        //                      Image TEXT, Description TEXT, Year INTEGER, APrice INTEGER,
+        //                      SPrice INTEGER, IsBest INTEGER, IsWorst INTEGER, IsStarred INTEGER )
+
+        final String SQL_CREATE_TABLE =
                 "CREATE TABLE " + ListingContract.ListingEntry.TABLE_NAME + " (" +
                         ListingContract.ListingEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEP +
                         ListingContract.ListingEntry.KEY_UUID + TEXT_TYPE + COMMA_SEP +
@@ -47,9 +66,10 @@ public class ListingDbHelper extends SQLiteOpenHelper {
                         ListingContract.ListingEntry.KEY_STANDARD_PRICE + INTEGER_TYPE + COMMA_SEP +
                         ListingContract.ListingEntry.KEY_BEST + INTEGER_TYPE + COMMA_SEP +
                         ListingContract.ListingEntry.KEY_WORST + INTEGER_TYPE + COMMA_SEP +
-                        ListingContract.ListingEntry.KEY_STARRED + INTEGER_TYPE + COMMA_SEP +
+                        ListingContract.ListingEntry.KEY_STARRED + INTEGER_TYPE +
                         " )";
-        db.execSQL(SQL_CREATE_ENTRIES);
+
+        db.execSQL(SQL_CREATE_TABLE);
     }
 
     /**
@@ -68,24 +88,67 @@ public class ListingDbHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Removes the listings table from the database, @see clear()
+     * Removes the listings table from the database
      */
     public void removeAllCarListings() {
+        // DROP TABLE IF EXISTS Listings
+
         SQLiteDatabase db = getWritableDatabase();
         final String SQL_DELETE_ENTRIES =
                 "DROP TABLE IF EXISTS " + ListingContract.ListingEntry.TABLE_NAME;
         db.execSQL(SQL_DELETE_ENTRIES);
+
         db.close();
     }
 
-    /**
-     * Removes all entries from the listings table
-     */
-    public void clear() {
-        SQLiteDatabase db = getWritableDatabase();
-        removeAllCarListings();
-        onCreate(db);
-        db.close();
+    private CarListing carListingHelper(Cursor cursor) {
+        if (cursor != null) {
+            cursor.moveToNext();
+            CarListing carListing = new CarListing(
+                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_UUID)),
+                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MAKE)),
+                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MODEL)),
+                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_IMAGE)),
+                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_DESCRIPTION)),
+
+                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_YEAR)),
+                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_ASKING_PRICE)),
+                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STANDARD_PRICE)),
+
+                // since the database is storing boolean values as ints we convert it back to boolean
+                // true == 1, false == 0
+                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_BEST)) == 1,
+                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_WORST)) == 1,
+                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STARRED)) == 1
+            );
+            return carListing;
+        }
+        return null;
+    }
+
+    private List<CarListing> carListingsHelper(Cursor cursor) {
+        List<CarListing> carListings = new ArrayList<CarListing>();
+        while (cursor.moveToNext()) {
+            CarListing carListing = new CarListing(
+                    // TODO: improve
+                    // we can guess the column numbers, but they are retrieved explicitly
+                    cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_UUID)),
+                    cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MAKE)),
+                    cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MODEL)),
+                    cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_IMAGE)),
+                    cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_DESCRIPTION)),
+                    cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_YEAR)),
+                    cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_ASKING_PRICE)),
+                    cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STANDARD_PRICE)),
+                    // since the database is storing boolean values as ints we convert it back to boolean
+                    // true == 1, false == 0
+                    cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_BEST)) == 1,
+                    cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_WORST)) == 1,
+                    cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STARRED)) == 1
+            );
+            carListings.add(carListing);
+        }
+        return carListings;
     }
 
     /**
@@ -96,6 +159,10 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      */
     public long addCarListing(CarListing carListing) {
         SQLiteDatabase db = getWritableDatabase();
+
+        // INSERT INTO Listings (Uuid, Make, Model, Image, Description, Year,  APrice, SPrice,
+        //                  IsBest, IsWorst, IsStarred)
+        // VALUES (...)
         ContentValues values = new ContentValues();
         values.put(ListingContract.ListingEntry.KEY_UUID, carListing.getUuid());
         values.put(ListingContract.ListingEntry.KEY_MAKE, carListing.getMake());
@@ -111,11 +178,12 @@ public class ListingDbHelper extends SQLiteOpenHelper {
         values.put(ListingContract.ListingEntry.KEY_WORST, carListing.isWorstInYear()? 1 : 0);
         values.put(ListingContract.ListingEntry.KEY_STARRED, carListing.isStarred()? 1 : 0);
 
-        long id = db.insert(
-                ListingContract.ListingEntry.TABLE_NAME,
-                null,
-                values);
+        long id = db.insert( ListingContract.ListingEntry.TABLE_NAME,
+                             null,
+                             values );
+
         db.close();
+
         return id;
     }
 
@@ -125,10 +193,13 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      */
     public void removeCarListing(String uuid) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(
-                ListingContract.ListingEntry.TABLE_NAME,
-                ListingContract.ListingEntry.KEY_UUID + "=" + uuid,
-                null);
+
+        // DELETE FROM Listings
+        // WHERE Uuid = ?
+        db.delete( ListingContract.ListingEntry.TABLE_NAME,
+                   ListingContract.ListingEntry.KEY_UUID + "=" + uuid,
+                   null );
+
         db.close();
     }
 
@@ -139,49 +210,22 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      */
     public CarListing getCarListing(String uuid) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(
-                ListingContract.ListingEntry.TABLE_NAME,
-                new String[] {
-                    ListingContract.ListingEntry.KEY_UUID,
-                    ListingContract.ListingEntry.KEY_MAKE,
-                    ListingContract.ListingEntry.KEY_MODEL,
-                    ListingContract.ListingEntry.KEY_IMAGE,
-                    ListingContract.ListingEntry.KEY_DESCRIPTION,
-                    ListingContract.ListingEntry.KEY_YEAR,
-                    ListingContract.ListingEntry.KEY_ASKING_PRICE,
-                    ListingContract.ListingEntry.KEY_STANDARD_PRICE,
-                    ListingContract.ListingEntry.KEY_BEST,
-                    ListingContract.ListingEntry.KEY_WORST,
-                    ListingContract.ListingEntry.KEY_STARRED,
-                },
-                ListingContract.ListingEntry.KEY_UUID + "=?",
-                new String[] { uuid },
-                null,
-                null,
-                null,
-                null);
 
-        if (cursor != null) cursor.moveToFirst();
-        else return null;
+        // SELECT Uuid, Make, Model, Image, Description, Year, APrice, SPrice, IsBest, IsWorst,
+        //        IsStarred
+        // FROM Listings
+        // WHERE Uuid = ?
+        Cursor cursor = db.query( ListingContract.ListingEntry.TABLE_NAME,
+                                  PROJECTION_COLUMNS,
+                                  ListingContract.ListingEntry.KEY_UUID + "=?",
+                                  new String[] { uuid },
+                                  null, null, null, null );
 
-        CarListing carListing = new CarListing(
-            // TODO: improve
-            // we can guess the column numbers, but they are retrieved explicitly
-            cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_UUID)),
-            cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MAKE)),
-            cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MODEL)),
-            cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_IMAGE)),
-            cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_DESCRIPTION)),
-            cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_YEAR)),
-            cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_ASKING_PRICE)),
-            cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STANDARD_PRICE)),
-            // since the database is storing boolean values as ints we convert it back to boolean
-            // true == 1, false == 0
-            cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_BEST)) == 1,
-            cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_WORST)) == 1,
-            cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STARRED)) == 1
-                );
+        CarListing carListing = carListingHelper(cursor);
+
+        cursor.close();
         db.close();
+
         return carListing;
     }
 
@@ -190,37 +234,20 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      * @return List containing all the CarListings
      */
     public List<CarListing> getAllCarListings() {
-        final String SQL_SELECT_ALL_ENTRIES_QUERY =
-                "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
-                        ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" + "FROM "
-                        + ListingContract.ListingEntry.TABLE_NAME +
-                " ORDER BY \'ranking\' ASC";
-        List<CarListing> carListings = new ArrayList<CarListing>();
-
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(SQL_SELECT_ALL_ENTRIES_QUERY, null);
-        while (cursor.moveToNext()) {
-            CarListing carListing = new CarListing(
-                // TODO: improve
-                // we can guess the column numbers, but they are retrieved explicitly
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_UUID)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MAKE)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MODEL)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_IMAGE)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_DESCRIPTION)),
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_YEAR)),
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_ASKING_PRICE)),
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STANDARD_PRICE)),
-                // since the database is storing boolean values as ints we convert it back to boolean
-                // true == 1, false == 0
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_BEST)) == 1,
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_WORST)) == 1,
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STARRED)) == 1
-            );
-            carListings.add(carListing);
-        }
+
+        // SELECT *, (APrice - SPrice) AS 'RANKING'
+        // FROM Listings
+        // ORDER BY 'RANKING'
+        Cursor cursor = db.query( ListingContract.ListingEntry.TABLE_NAME,
+                                  PROJECTION_COLUMNS,
+                                  null, null, null, null,
+                                  null );
+        List<CarListing> carListings = carListingsHelper(cursor);
+
         cursor.close();
         db.close();
+
         return carListings;
     }
 
@@ -229,38 +256,23 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      * @return List containing all starred listings
      */
     public List<CarListing> getFavoriteCarListings() {
-        final String SQL_SELECT_FAVORITE_ENTRIES_QUERY =
-                "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
-                        ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" +
-                        " FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                        " WHERE " + ListingContract.ListingEntry.KEY_STARRED + " = 1"  +
-                        " ORDER BY \'ranking' ASC";
-        List<CarListing> carListings = new ArrayList<CarListing>();
-
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(SQL_SELECT_FAVORITE_ENTRIES_QUERY, null);
-        while (cursor.moveToNext()) {
-            CarListing carListing = new CarListing(
-                // TODO: improve
-                // we can guess the column numbers, but they are retrieved explicitly
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_UUID)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MAKE)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MODEL)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_IMAGE)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_DESCRIPTION)),
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_YEAR)),
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_ASKING_PRICE)),
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STANDARD_PRICE)),
-                // since the database is storing boolean values as ints we convert it back to boolean
-                // true == 1, false == 0
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_BEST)) == 1,
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_WORST)) == 1,
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STARRED)) == 1
-            );
-            carListings.add(carListing);
-        }
+
+        // SELECT *, (APrice - SPrice) AS 'RANKING'
+        // FROM Listings
+        // WHERE IsStarred = 1
+        // ORDER BY 'RANKING' ASC
+        Cursor cursor = db.query( ListingContract.ListingEntry.TABLE_NAME,
+                                  PROJECTION_COLUMNS,
+                                  ListingContract.ListingEntry.KEY_STARRED + "=?",
+                                  new String[] { "1" },
+                                  null, null, null );
+
+        List<CarListing> carListings = carListingsHelper(cursor);
+
         cursor.close();
         db.close();
+
         return carListings;
     }
 
@@ -268,18 +280,23 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      * @return a list containing all distinct makes
      */
     public List<String> getAllMakes() {
-        final String SQL_SELECT_ALL_MAKES_QUERY =
-                "SELECT DISTINCT " + ListingContract.ListingEntry.KEY_MAKE +
-                        " FROM " + ListingContract.ListingEntry.TABLE_NAME;
-        List<String> makes = new ArrayList<String>();
-
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(SQL_SELECT_ALL_MAKES_QUERY, null);
+
+        // SELECT DISTINCT Make
+        // FROM Listings
+        Cursor cursor = db.query( true,
+                                  ListingContract.ListingEntry.TABLE_NAME,
+                                  new String[] { ListingContract.ListingEntry.KEY_MAKE },
+                                  null, null, null, null, null, null );
+
+        List<String> makes = new ArrayList<String>();
         while (cursor.moveToNext()) {
             makes.add(cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MAKE)));
         }
+
         cursor.close();
         db.close();
+
         return makes;
     }
 
@@ -289,19 +306,26 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      * @return a Listing containing all distinct models for a given make
      */
     public List<String> getAllModels(String make) {
-        final String SQL_SELECT_ALL_MODELS_QUERY =
-                "SELECT DISTINCT " + ListingContract.ListingEntry.KEY_MODEL +
-                        " FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                        " WHERE " + ListingContract.ListingEntry.KEY_MAKE + "=\'" + make + "\'";
-        List<String> models = new ArrayList<String>();
-
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(SQL_SELECT_ALL_MODELS_QUERY, null);
+
+        // SELECT DISTINCT Model
+        // FROM Listings
+        // WHERE Make  = ?
+        Cursor cursor = db.query( true,
+                                  ListingContract.ListingEntry.TABLE_NAME,
+                                  new String[]{ListingContract.ListingEntry.KEY_MODEL},
+                                  ListingContract.ListingEntry.KEY_MAKE + "=?",
+                                  new String[]{ make },
+                                  null, null, null, null );
+
+        List<String> models = new ArrayList<String>();
         while (cursor.moveToNext()) {
             models.add(cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MODEL)));
         }
+
         cursor.close();
         db.close();
+
         return models;
     }
 
@@ -314,91 +338,68 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      * @return a list containing all the CarListings fitting the criteria
      */
     public List<CarListing> getCarListings(String make, String model, int minPrice, int maxPrice) {
-        // TODO: BUG this query does not handle the ALL case for makes/models
-        String SQL_SELECT_CAR_LISTINGS_QUERY;
-        if (make.equals("ALL")) {
-            // if make == All then model must also == ALL
-            SQL_SELECT_CAR_LISTINGS_QUERY =
-                    "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
-                        ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" +
-                            " FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                            " WHERE " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
-                            " BETWEEN " + minPrice + " AND " + maxPrice +
-                            " ORDER BY \'ranking' ASC";
-        } else if (model.equals("ALL")) {
-            SQL_SELECT_CAR_LISTINGS_QUERY =
-                    "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
-                            ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" +
-                            " FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                            " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
-                            " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
-                            " BETWEEN " + minPrice + " AND " + maxPrice +
-                            " ORDER BY \'ranking' ASC";
-        } else {
-            SQL_SELECT_CAR_LISTINGS_QUERY =
-                    "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
-                            ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" +
-                            " FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                            " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
-                            " AND " + ListingContract.ListingEntry.KEY_MODEL + " = \'" + model + "\'" +
-                            " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
-                            " BETWEEN " + minPrice + " AND " + maxPrice +
-                            " ORDER BY \'ranking' ASC";
-        }
-        List<CarListing> carListings = new ArrayList<CarListing>();
-
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(SQL_SELECT_CAR_LISTINGS_QUERY, null);
-        while (cursor.moveToNext()) {
-            CarListing carListing = new CarListing(
-                // TODO: improve
-                // we can guess the column numbers, but they are retrieved explicitly
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_UUID)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MAKE)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_MODEL)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_IMAGE)),
-                cursor.getString(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_DESCRIPTION)),
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_YEAR)),
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_ASKING_PRICE)),
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STANDARD_PRICE)),
-                // since the database is storing boolean values as ints we convert it back to boolean
-                // true == 1, false == 0
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_BEST)) == 1,
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_WORST)) == 1,
-                cursor.getInt(cursor.getColumnIndex(ListingContract.ListingEntry.KEY_STARRED)) == 1
-            );
-            carListings.add(carListing);
+
+        StringBuilder WHERE = new StringBuilder();
+
+        WHERE.append(ListingContract.ListingEntry.KEY_ASKING_PRICE + " BETWEEN ? AND ?");
+
+        // TODO: probably a better way to do this, but we can't make the Selection Args dynamic
+        if (!make.equals("ALL")) {
+            WHERE.append(" AND " + ListingContract.ListingEntry.KEY_MAKE + "=\'"+ make + "\'");
+            if (!model.equals("ALL")) {
+                WHERE.append(" AND " + ListingContract.ListingEntry.KEY_MODEL + "=\'" + model + "\'");
+            }
         }
+
+        Cursor cursor = db.query( ListingContract.ListingEntry.TABLE_NAME,
+                                  PROJECTION_COLUMNS,
+                                  WHERE.toString(),
+                                  new String[] {Integer.toString(minPrice), Integer.toString(maxPrice)},
+                                  null, null, null );
+
+        List<CarListing> carListings = carListingsHelper(cursor);
+
         cursor.close();
         db.close();
+
         return carListings;
     }
 
     /**
      * Updates the starred value of a CarListing
      * @param uuid uuid of the CarListing to update
-     * @param starred whether the CarListing is starred
+     * @param starred new starred state
      */
     public void updateCarListingStarred(String uuid, boolean starred) {
         SQLiteDatabase db = getWritableDatabase();
-        final String SQL_TOGGLE_FAVORITE =
-                "UPDATE " + ListingContract.ListingEntry.TABLE_NAME +
-                        " SET " + ListingContract.ListingEntry.KEY_STARRED +
-                        " = " + ((starred)? 1 : 0) + " WHERE " + ListingContract.ListingEntry.KEY_UUID +
-                        "=\'" + uuid +"\'";
-        db.execSQL(SQL_TOGGLE_FAVORITE);
+
+        ContentValues values = new ContentValues();
+        values.put(ListingContract.ListingEntry.KEY_STARRED, starred? 1 : 0);
+
+        db.update( ListingContract.ListingEntry.TABLE_NAME,
+                   values,
+                   ListingContract.ListingEntry.KEY_UUID + "=?",
+                   new String[] { uuid } );
+        Log.e("UPDATE", "Star Changed");
         db.close();
     }
 
+    /**
+     * Updates the starred value of a CarListing
+     * @param uuid uuid of the CarListing to update
+     * @param standardPrice new standardPrice
+     */
     public void updateCarListingStandardPrice(String uuid, int standardPrice) {
         SQLiteDatabase db = getWritableDatabase();
-        final String SQL_UPDATE_STANDARD_PRICE =
-                "UPDATE " + ListingContract.ListingEntry.TABLE_NAME +
-                        " SET " + ListingContract.ListingEntry.KEY_STANDARD_PRICE +
-                        " = " + standardPrice + " WHERE " + ListingContract.ListingEntry.KEY_UUID +
-                        "=\'" + uuid +"\'";
-        db.execSQL(SQL_UPDATE_STANDARD_PRICE);
-        Log.e("Updated", "UUID: " + uuid + " price: " + standardPrice + "\n" + SQL_UPDATE_STANDARD_PRICE);
+        ContentValues values = new ContentValues();
+        values.put(ListingContract.ListingEntry.KEY_STANDARD_PRICE, standardPrice);
+
+        db.update(ListingContract.ListingEntry.TABLE_NAME,
+                values,
+                ListingContract.ListingEntry.KEY_UUID + "=?",
+                new String[]{ uuid } );
+
         db.close();
     }
 

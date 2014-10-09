@@ -86,13 +86,20 @@ public class ListingArrayAdapter extends ArrayAdapter {
             // get and set the checkbox that represents a starred (favorite) item
             final CheckBox starred = (CheckBox) view.findViewById(R.id.list_item_starred_checkbox);
             starred.setChecked(carListing.isStarred());
-            starred.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            starred.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnCheckedChangedCallback.onCheckedChanged(carListing.getUuid(),
+                            starred.isChecked());
+                }
+            });
+            /*starred.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     // if the value of this checkbox changes, we perform a call back so the
                     // parent can update the database
                     mOnCheckedChangedCallback.onCheckedChanged(carListing.getUuid(), isChecked);
                 }
-            });
+            });*/
 
             // increase the touch area of the checkbox, we want to give the user as
             // much space as possible to prevent miss clicks
