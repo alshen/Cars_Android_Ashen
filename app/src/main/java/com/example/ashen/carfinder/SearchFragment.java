@@ -35,7 +35,7 @@ public class SearchFragment extends Fragment {
         final ListingDbHelper helper = new ListingDbHelper(this.getActivity());
 
         final List<String> makes = helper.getAllMakes();
-        makes.add(0, "Any"); // insert the ALL option
+        makes.add(0, "Any"); // insert the Any option
 
         final List<String> models = new ArrayList<String>();
 

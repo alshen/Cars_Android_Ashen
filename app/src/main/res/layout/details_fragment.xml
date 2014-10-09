@@ -3,7 +3,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/list_selector">
+    android:background="@android:color/white" >
     <RelativeLayout
         android:id="@+id/details_fragment"
         android:layout_width="fill_parent"
@@ -11,7 +11,7 @@
         android:padding="10dp">
 
 
-        <LinearLayout android:id="@+id/list_item_thumbnail"
+        <LinearLayout android:id="@+id/details_thumbnail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="2000 Ford Tarus"
-            android:layout_toRightOf="@id/list_item_thumbnail"
+            android:layout_toRightOf="@id/details_thumbnail"
             android:textStyle="normal"
             android:padding="8dp"
             android:textSize="20sp"/>
@@ -42,7 +42,7 @@
             android:id="@+id/dfprice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/list_item_thumbnail"
+            android:layout_toRightOf="@id/details_thumbnail"
             android:layout_below="@id/dftitle"
             android:textColor="@android:color/holo_red_dark"
             android:textStyle="bold"
@@ -52,13 +52,30 @@
             android:padding="8dp"
             android:text="$20,1111"/>
 
+        <TextView
+            android:id="@+id/spec_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/details_thumbnail"
+            android:layout_marginBottom="2dp"
+            android:textColor="@android:color/holo_blue_light"
+            style="@style/AppTheme"
+            android:text="SPECIFICATIONS"/>
+        <View
+            android:id="@+id/spec_label_sep"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@id/spec_label"
+            android:background="@android:color/holo_blue_light"/>
+
         <LinearLayout
             android:id="@+id/dfr1"
             android:layout_marginBottom="2dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/list_item_thumbnail">
+            android:layout_below="@id/spec_label_sep">
             <TextView
                 android:id="@+id/dfl1"
                 android:layout_width="0dp"
@@ -245,10 +262,27 @@
                 android:text="-"/>
         </LinearLayout>
         <TextView
-            android:id="@+id/dfdescription"
+            android:id="@+id/description_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dfr6"
+            android:layout_marginBottom="2dp"
+            android:textColor="@android:color/holo_blue_light"
+
+            style="@style/AppTheme"
+            android:text="DESCRIPTION"/>
+        <View
+            android:id="@+id/description_label_sep"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@id/description_label"
+            android:background="@android:color/holo_blue_light"/>
+        <TextView
+            android:id="@+id/dfdescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/description_label_sep"
             android:text="Description"/>
 
     </RelativeLayout>
