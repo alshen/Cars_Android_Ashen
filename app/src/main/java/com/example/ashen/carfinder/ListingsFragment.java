@@ -19,13 +19,10 @@ public class ListingsFragment extends ListFragment implements ListingArrayAdapte
                 container, false);
 
         ListingDbHelper helper = new ListingDbHelper(view.getContext());
-        ListView myList=(ListView)view.findViewById(android.R.id.list);
-        ListingArrayAdapter adapter = new ListingArrayAdapter(view.getContext(),
-                R.layout.list,
-                helper.getAllCarListings(),
-                this,
-                this);
-        myList.setAdapter(adapter);
+        ListView listView =(ListView)view.findViewById(android.R.id.list);
+        ListingArrayAdapter adapter = new ListingArrayAdapter(view.getContext(), R.layout.list,
+                                        helper.getAllCarListings(), this, this );
+        listView.setAdapter(adapter);
         return view;
     }
 

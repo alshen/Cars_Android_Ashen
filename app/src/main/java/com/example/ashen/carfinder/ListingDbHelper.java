@@ -337,17 +337,19 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      * @param maxPrice the maximum price of the used car
      * @return a list containing all the CarListings fitting the criteria
      */
-    public List<CarListing> getCarListings(String make, String model, int minPrice, int maxPrice) {
+    public List<CarListing> getCarListings(String make, String model, int minPrice, int maxPrice,
+                                           int minYear, int maxYear) {
         SQLiteDatabase db = getReadableDatabase();
 
         StringBuilder WHERE = new StringBuilder();
 
         WHERE.append(ListingContract.ListingEntry.KEY_ASKING_PRICE + " BETWEEN ? AND ?");
+        WHERE.append(" AND " + ListingContract.ListingEntry.KEY_YEAR + " BETWEEN ? AND ?");
 
         // TODO: probably a better way to do this, but we can't make the Selection Args dynamic
-        if (!make.equals("ALL")) {
+        if (!make.equals("Any")) {
             WHERE.append(" AND " + ListingContract.ListingEntry.KEY_MAKE + "=\'"+ make + "\'");
-            if (!model.equals("ALL")) {
+            if (!model.equals("Any")) {
                 WHERE.append(" AND " + ListingContract.ListingEntry.KEY_MODEL + "=\'" + model + "\'");
             }
         }
@@ -355,7 +357,8 @@ public class ListingDbHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query( ListingContract.ListingEntry.TABLE_NAME,
                                   PROJECTION_COLUMNS,
                                   WHERE.toString(),
-                                  new String[] {Integer.toString(minPrice), Integer.toString(maxPrice)},
+                                  new String[] {Integer.toString(minPrice), Integer.toString(maxPrice),
+                                                Integer.toString(minYear), Integer.toString(maxYear)},
                                   null, null, null );
 
         List<CarListing> carListings = carListingsHelper(cursor);
@@ -381,7 +384,6 @@ public class ListingDbHelper extends SQLiteOpenHelper {
                    values,
                    ListingContract.ListingEntry.KEY_UUID + "=?",
                    new String[] { uuid } );
-        Log.e("UPDATE", "Star Changed");
         db.close();
     }
 

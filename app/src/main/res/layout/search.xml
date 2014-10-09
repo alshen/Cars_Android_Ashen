@@ -1,104 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_search"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/list_selector"
-    android:orientation="horizontal"
-    android:padding="10dip" >
+    android:padding="10dp">
 
     <LinearLayout
         android:orientation="horizontal"
-        android:id="@+id/sr1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp">
+        android:id="@+id/search_make_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Make"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Model"/>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/sr2"
-        android:orientation="horizontal"
-        android:layout_below="@id/sr1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
-        <Spinner
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinner"
-            style="@style/AppTheme"
-            android:layout_weight="1" />
-
-        <Spinner
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinner2"
-            style="@style/AppTheme"
-            android:layout_weight="1"/>
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:id="@+id/sr3"
-        android:layout_below="@id/sr2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Minimum Price"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Maximum Price"/>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/sr4"
-        android:orientation="horizontal"
-        android:layout_below="@id/sr3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
+            android:layout_weight="0.2"
+            android:text="Make"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_gravity="bottom"/>
         <EditText
-            android:id="@+id/ed1"
+            android:id="@+id/search_make"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:digits="0123456789"
-            style="@style/AppTheme"
+            android:layout_weight="0.8"
+            android:inputType="none"
+            android:focusableInTouchMode="false"
+            android:text="Any"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/search_model_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_make_row">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="Model"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_gravity="bottom"/>
+        <EditText
+            android:id="@+id/search_model"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:inputType="none"
+            android:focusableInTouchMode="false"
+            android:text="Any"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/search_year_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_model_row">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="Year"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_gravity="bottom"/>
+        <EditText
+            android:id="@+id/search_year_min"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
             android:inputType="number"
-            android:maxLength="9"
-            android:hint="0"/>
+            android:digits="0123456789"
+            android:maxLength="4"
+            android:hint="min"/>
         <EditText
-            android:id="@+id/ed2"
+            android:id="@+id/search_year_max"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="9000"
+            android:layout_weight="0.4"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:maxLength="4"
+            android:hint="max"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/search_price_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_year_row">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="Price"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_gravity="bottom"/>
+        <EditText
+            android:id="@+id/search_price_min"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:inputType="number"
             android:digits="0123456789"
             android:maxLength="9"
-            style="@style/AppTheme"
-            android:inputType="number"/>
+            android:hint="min"/>
+        <EditText
+            android:id="@+id/search_price_max"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:maxLength="9"
+            android:hint="max"/>
     </LinearLayout>
     <Button
         android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sr4"
+        android:layout_below="@id/search_price_row"
+        android:layout_alignParentRight="true"
+        android:text="search"
+        android:textColor="@android:color/white"
         style="@style/AppTheme"
-        android:text="search"/>
+        android:background="@android:color/holo_blue_light"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp" />
+
 </RelativeLayout>

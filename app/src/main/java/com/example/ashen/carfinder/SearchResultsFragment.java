@@ -17,19 +17,19 @@ public class SearchResultsFragment extends ListingsFragment {
                 container, false);
         ListingDbHelper helper = new ListingDbHelper(view.getContext());
 
-        String make = getArguments().getString("make");
+        String make  = getArguments().getString("make");
         String model = getArguments().getString("model");
         int minPrice = getArguments().getInt("minPrice");
         int maxPrice = getArguments().getInt("maxPrice");
-        Log.e("PRICE", make + " " + model + " " + minPrice + " " + maxPrice);
-        List<CarListing> carListings = helper.getCarListings(make, model, minPrice, maxPrice);
-        ListView myList = (ListView) view.findViewById(android.R.id.list);
-        ListingArrayAdapter adapter = new ListingArrayAdapter(view.getContext(),
-                R.layout.list,
-                carListings,
-                this,
-                this);
-        myList.setAdapter(adapter);
+        int minYear  = getArguments().getInt("minYear");
+        int maxYear  = getArguments().getInt("maxYear");
+
+        List<CarListing> carListings = helper.getCarListings( make, model, minPrice, maxPrice,
+                minYear, maxYear );
+        ListView listView = (ListView) view.findViewById(android.R.id.list);
+        ListingArrayAdapter adapter = new ListingArrayAdapter(view.getContext(), R.layout.list,
+                                        carListings, this, this );
+        listView.setAdapter(adapter);
 
         return view;
     }
