@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,6 @@ public class ListingDbHelper extends SQLiteOpenHelper {
                         ListingContract.ListingEntry.KEY_BEST + INTEGER_TYPE + COMMA_SEP +
                         ListingContract.ListingEntry.KEY_WORST + INTEGER_TYPE + COMMA_SEP +
                         ListingContract.ListingEntry.KEY_STARRED + INTEGER_TYPE + COMMA_SEP +
-                        ListingContract.ListingEntry.KEY_RANKING + INTEGER_TYPE +
                         " )";
         db.execSQL(SQL_CREATE_ENTRIES);
     }
@@ -110,10 +110,6 @@ public class ListingDbHelper extends SQLiteOpenHelper {
         values.put(ListingContract.ListingEntry.KEY_BEST, carListing.isBestInYear()? 1 : 0);
         values.put(ListingContract.ListingEntry.KEY_WORST, carListing.isWorstInYear()? 1 : 0);
         values.put(ListingContract.ListingEntry.KEY_STARRED, carListing.isStarred()? 1 : 0);
-
-        // this is a very simple ranking formula in which we take the asking price - standard price
-        values.put(ListingContract.ListingEntry.KEY_RANKING, carListing.getAskingPrice()
-                - carListing.getStandardPrice());
 
         long id = db.insert(
                 ListingContract.ListingEntry.TABLE_NAME,
@@ -195,8 +191,10 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      */
     public List<CarListing> getAllCarListings() {
         final String SQL_SELECT_ALL_ENTRIES_QUERY =
-                "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
+                "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
+                        ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" + "FROM "
+                        + ListingContract.ListingEntry.TABLE_NAME +
+                " ORDER BY \'ranking\' ASC";
         List<CarListing> carListings = new ArrayList<CarListing>();
 
         SQLiteDatabase db = getReadableDatabase();
@@ -232,9 +230,11 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      */
     public List<CarListing> getFavoriteCarListings() {
         final String SQL_SELECT_FAVORITE_ENTRIES_QUERY =
-                "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
+                "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
+                        ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" +
+                        " FROM " + ListingContract.ListingEntry.TABLE_NAME +
                         " WHERE " + ListingContract.ListingEntry.KEY_STARRED + " = 1"  +
-                        " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
+                        " ORDER BY \'ranking' ASC";
         List<CarListing> carListings = new ArrayList<CarListing>();
 
         SQLiteDatabase db = getReadableDatabase();
@@ -319,25 +319,31 @@ public class ListingDbHelper extends SQLiteOpenHelper {
         if (make.equals("ALL")) {
             // if make == All then model must also == ALL
             SQL_SELECT_CAR_LISTINGS_QUERY =
-                    "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
+                    "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
+                        ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" +
+                            " FROM " + ListingContract.ListingEntry.TABLE_NAME +
                             " WHERE " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
                             " BETWEEN " + minPrice + " AND " + maxPrice +
-                            " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
+                            " ORDER BY \'ranking' ASC";
         } else if (model.equals("ALL")) {
             SQL_SELECT_CAR_LISTINGS_QUERY =
-                    "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                    " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
-                    " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
-                    " BETWEEN " + minPrice  + " AND " + maxPrice +
-                    " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
+                    "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
+                            ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" +
+                            " FROM " + ListingContract.ListingEntry.TABLE_NAME +
+                            " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
+                            " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
+                            " BETWEEN " + minPrice + " AND " + maxPrice +
+                            " ORDER BY \'ranking' ASC";
         } else {
             SQL_SELECT_CAR_LISTINGS_QUERY =
-                    "SELECT * FROM " + ListingContract.ListingEntry.TABLE_NAME +
-                    " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
-                    " AND " + ListingContract.ListingEntry.KEY_MODEL + " = \'" + model + "\'" +
-                    " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
-                    " BETWEEN " + minPrice + " AND " + maxPrice +
-                    " ORDER BY " + ListingContract.ListingEntry.KEY_RANKING + " ASC";
+                    "SELECT *," + " (" + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
+                            ListingContract.ListingEntry.KEY_STANDARD_PRICE + ") AS \'ranking\'" +
+                            " FROM " + ListingContract.ListingEntry.TABLE_NAME +
+                            " WHERE " + ListingContract.ListingEntry.KEY_MAKE + " = \'" + make + "\'" +
+                            " AND " + ListingContract.ListingEntry.KEY_MODEL + " = \'" + model + "\'" +
+                            " AND " + ListingContract.ListingEntry.KEY_ASKING_PRICE +
+                            " BETWEEN " + minPrice + " AND " + maxPrice +
+                            " ORDER BY \'ranking' ASC";
         }
         List<CarListing> carListings = new ArrayList<CarListing>();
 
@@ -374,7 +380,7 @@ public class ListingDbHelper extends SQLiteOpenHelper {
      * @param starred whether the CarListing is starred
      */
     public void updateCarListingStarred(String uuid, boolean starred) {
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         final String SQL_TOGGLE_FAVORITE =
                 "UPDATE " + ListingContract.ListingEntry.TABLE_NAME +
                         " SET " + ListingContract.ListingEntry.KEY_STARRED +
@@ -383,4 +389,27 @@ public class ListingDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_TOGGLE_FAVORITE);
         db.close();
     }
+
+    public void updateCarListingStandardPrice(String uuid, int standardPrice) {
+        SQLiteDatabase db = getWritableDatabase();
+        final String SQL_UPDATE_STANDARD_PRICE =
+                "UPDATE " + ListingContract.ListingEntry.TABLE_NAME +
+                        " SET " + ListingContract.ListingEntry.KEY_STANDARD_PRICE +
+                        " = " + standardPrice + " WHERE " + ListingContract.ListingEntry.KEY_UUID +
+                        "=\'" + uuid +"\'";
+        db.execSQL(SQL_UPDATE_STANDARD_PRICE);
+        Log.e("Updated", "UUID: " + uuid + " price: " + standardPrice + "\n" + SQL_UPDATE_STANDARD_PRICE);
+        db.close();
+    }
+
+    /*public void updateCarListingXInYear(String uuid, boolean best, ) {
+        SQLiteDatabase db = getReadableDatabase();
+        final String SQL_UPDATE_STANDARD_PRICE =
+                "UPDATE " + ListingContract.ListingEntry.TABLE_NAME +
+                        " SET " + ListingContract.ListingEntry.KEY_STANDARD_PRICE +
+                        " = " + standardPrice + " WHERE " + ListingContract.ListingEntry.KEY_UUID +
+                        "=\'" + uuid +"\'";
+        db.execSQL(SQL_UPDATE_STANDARD_PRICE);
+        db.close();
+    }*/
 }

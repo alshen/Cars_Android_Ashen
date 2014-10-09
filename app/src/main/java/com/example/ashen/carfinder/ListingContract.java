@@ -23,7 +23,6 @@ public final class ListingContract {
         public static final String KEY_BEST           = "IsBest";
         public static final String KEY_WORST          = "IsWorst";
         public static final String KEY_STARRED        = "IsStarred";
-        public static final String KEY_RANKING        = "Ranking";
     }
 }
 

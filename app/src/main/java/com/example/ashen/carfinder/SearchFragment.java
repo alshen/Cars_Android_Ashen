@@ -27,11 +27,14 @@ public class SearchFragment extends Fragment {
         final View view = inflater.inflate(R.layout.search,
                 container, false);
         final ListingDbHelper helper = new ListingDbHelper(this.getActivity());
-        final List<String> makes = helper.getAllMakes();
+
+        List<String> makes = helper.getAllMakes();
         makes.add(0, "ALL"); // insert the ALL option
+
         final Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
         ArrayAdapter adapter = new ArrayAdapter(view.getContext(), R.layout.spinner_item, makes);
         spinner.setAdapter(adapter);
+
         final Spinner spinner2 = (Spinner) view.findViewById(R.id.spinner2);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -51,6 +54,7 @@ public class SearchFragment extends Fragment {
 
             }
         });
+
         final EditText editText1 = (EditText) view.findViewById(R.id.ed1);
         final EditText editText2 = (EditText) view.findViewById(R.id.ed2);
 
@@ -61,25 +65,30 @@ public class SearchFragment extends Fragment {
                 // set the min/max price to either their value or 0 if they are empty
                 String minPriceString = editText1.getText().toString();
                 String maxPriceString = editText2.getText().toString();
+
                 int minPrice = minPriceString.isEmpty()?  0 : Integer.parseInt(minPriceString);
                 int maxPrice = maxPriceString.isEmpty()?  0: Integer.parseInt(maxPriceString);
+
                 String make  = spinner.getSelectedItem().toString();
                 String model = spinner2.getSelectedItem().toString();
 
                 if (minPrice > maxPrice) {
-                    Toast.makeText(view.getContext(), "Minimum Price must be lower than Maximum Price", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "Minimum Price must be lower than Maximum Price",
+                            Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     FragmentManager fragMgr = getFragmentManager();
                     FragmentTransaction transaction = fragMgr.beginTransaction();
 
                     SearchResultsFragment newFragment = new SearchResultsFragment();
+
                     Bundle args = new Bundle();
                     args.putString("make", make);
                     args.putString("model", model);
                     args.putInt("minPrice", minPrice);
                     args.putInt("maxPrice", maxPrice);
                     newFragment.setArguments(args);
+
                     // Replace whatever is in the fragment_container view with this fragment,
                     // and add the transaction to the back stack so the user can navigate back
                     transaction.replace(R.id.container, newFragment, "search_results_frag");
