@@ -2,12 +2,17 @@ package com.example.ashen.carfinder;
 
 import android.app.Activity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,8 +36,27 @@ public class Main extends Activity implements JsonLoader.OnTaskCompleted{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // if the network is unavailable, inform the user and ask to turn on wifi
+        // exit otherwise
         if (!isNetworkAvailable()) {
-            Toast.makeText(this, "Internet access is not available", Toast.LENGTH_LONG).show();
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setCancelable(true);
+            dialog.setTitle("Network Error");
+            dialog.setMessage("This application requires a network connection, turn on wifi and" +
+                    " try again. ");
+            dialog.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                }
+            });
+            dialog.show();
             return;
         }
 

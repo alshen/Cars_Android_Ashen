@@ -49,6 +49,9 @@ public class JsonLoader {
         this.mOnTaskCompletedCallback = callback;
     }
 
+    /**
+     * Queries the API for car listings, and loads them into a database
+     */
     public void loadDatabase() {
         Uri.Builder builder = new Uri.Builder()
                 .scheme("https")
@@ -111,6 +114,14 @@ public class JsonLoader {
         AppController.getInstance(mContext).addToRequestQueue(jsonArrayRequest);
     }
 
+    /**
+     * Queries the API for the standard price of a used car
+     *
+     * @param uuid of the CarListing
+     * @param make of the used car
+     * @param model of the used car
+     * @param year of the used car
+     */
     private void requestStandardPrice(final String uuid, String make, String model, int year) {
         Uri.Builder builder = new Uri.Builder()
                 .scheme("https")
