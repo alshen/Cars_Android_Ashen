@@ -28,6 +28,18 @@ public class ListingArrayAdapter extends ArrayAdapter {
     private OnClickListener mOnClickCallback;
     private OnCheckedChangedListener mOnCheckedChangedCallback;
 
+    // boolean array for storing
+    // the state of each CheckBox
+    private boolean[] mCheckBoxState;
+
+    static class ViewHolder {
+        TextView  title;
+        TextView  description;
+        TextView  price;
+        ImageView image;
+        CheckBox  starred;
+    }
+
     public ListingArrayAdapter(Context context, int resource, List<CarListing> carListings,
                                OnClickListener onClickedCallback,
                                OnCheckedChangedListener onCheckedChangedCallback) {
@@ -36,36 +48,45 @@ public class ListingArrayAdapter extends ArrayAdapter {
         this.mCarListings              = carListings;
         this.mOnClickCallback          = onClickedCallback;
         this.mOnCheckedChangedCallback = onCheckedChangedCallback;
+        this.mCheckBoxState            = new boolean[mCarListings.size()];
+
+        for (int i = 0; i < mCheckBoxState.length; i++) {
+            mCheckBoxState[i] = mCarListings.get(i).isStarred();
+        }
     }
 
     @Override
-    public View getView(int position, final View convertView, final ViewGroup parent) {
+    public View getView(final int position, final View convertView, final ViewGroup viewGroup) {
         View view = convertView;
-
+        ViewHolder holder = new ViewHolder();
         // first check to see if the view is null. if so, we have to inflate it.
         // to inflate it basically means to render, or show, the view.
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.listing_item, null);
+
+            holder.title = (TextView) view.findViewById(R.id.list_item_title);
+            holder.description = (TextView) view.findViewById(R.id.list_item_description);
+            holder.price = (TextView) view.findViewById(R.id.list_item_price);
+            holder.starred = (CheckBox) view.findViewById(R.id.list_item_starred_checkbox);
+            holder.image = (ImageView) view.findViewById(R.id.list_image);
+            view.setTag(holder);
+
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
         final CarListing carListing = mCarListings.get(position);
 
         if (carListing != null) {
-
             // get and set the TextView for the list item title
-            TextView titleView = (TextView) view.findViewById(R.id.list_item_title);
             String title = carListing.getYear() + " " + carListing.getModel() + " " +
                     carListing.getMake();
-            titleView.setText(title);
+            holder.title.setText(title);
 
             // get and set the TextView for the list item description
-            TextView descriptionView =  (TextView) view.findViewById(R.id.list_item_description);
-            descriptionView.setText(carListing.getDescription());
-
-            // get and set the TextView for the list item price
-            TextView priceView = (TextView) view.findViewById(R.id.list_item_price);
+            holder.description.setText(carListing.getDescription());
 
             // we format this value from an int to a currency value (i.e., $1)
             // this currency value uses the US locale but can probably be localized further
@@ -81,41 +102,33 @@ public class ListingArrayAdapter extends ArrayAdapter {
                     formattedPrice = formattedPrice.substring(1, centsIndex);
                 }
             }
-            priceView.setText(formattedPrice);
+            holder.price.setText(formattedPrice);
 
-            // get and set the checkbox that represents a starred (favorite) item
-            final CheckBox starred = (CheckBox) view.findViewById(R.id.list_item_starred_checkbox);
-            starred.setChecked(carListing.isStarred());
-            starred.setOnClickListener( new View.OnClickListener() {
+            //VITAL PART!!! Set the state of the CheckBox using the boolean array
+            holder.starred.setChecked(mCheckBoxState[position]);
+            holder.starred.setOnClickListener( new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mCheckBoxState[position]= ((CheckBox)v).isChecked();
                     mOnCheckedChangedCallback.onCheckedChanged(carListing.getUuid(),
-                            starred.isChecked());
+                            mCheckBoxState[position]);
                 }
             });
-            /*starred.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // if the value of this checkbox changes, we perform a call back so the
-                    // parent can update the database
-                    mOnCheckedChangedCallback.onCheckedChanged(carListing.getUuid(), isChecked);
-                }
-            });*/
 
-            // increase the touch area of the checkbox, we want to give the user as
-            // much space as possible to prevent miss clicks
-            final View starredParent = (View) starred.getParent();
-            starredParent.post( new Runnable() {
+            // increase the touch area for the checked box
+            final CheckBox delegate = holder.starred;
+            final View parent = (View) delegate.getParent();
+            parent.post( new Runnable() {
                 // Post in the parent's message queue to make sure the parent
                 // lays out its children before we call getHitRect()
                 public void run() {
-                    // TODO: figure out the best touch area, ideally find a way to view this Rect
                     final Rect r = new Rect();
-                    starred.getHitRect(r);
+                    delegate.getHitRect(r);
                     r.top -= 10;
                     r.bottom += 10;
                     r.left -= 10;
                     r.right += 10;
-                    starredParent.setTouchDelegate( new TouchDelegate( r , starred));
+                    parent.setTouchDelegate( new TouchDelegate( r , delegate));
                 }
             });
 
@@ -129,11 +142,8 @@ public class ListingArrayAdapter extends ArrayAdapter {
                     .showImageOnFail(R.drawable.default_image)
                     .showImageOnLoading(R.drawable.default_image).build();
 
-            //initialize image view
-            ImageView imageView = (ImageView) view.findViewById(R.id.list_image);
-
             //download and display image from url
-            imageLoader.displayImage(url, imageView, options);
+            imageLoader.displayImage(url, holder.image, options);
 
             // assigns a listener to handle on click events for this list item
             view.setOnClickListener(new View.OnClickListener() {
