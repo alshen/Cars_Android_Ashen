@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 /**
  * Class representing the detailed view of a CarListing
  */
@@ -27,6 +30,18 @@ public class ListingDetailsFragment extends Fragment {
 
         TextView title = (TextView) view.findViewById(R.id.dftitle);
         title.setText(carListing.getYear() + " " + carListing.getMake() + " " + carListing.getModel());
+
+        int price = carListing.getAskingPrice();
+        NumberFormat enUS = NumberFormat.getCurrencyInstance(Locale.US);
+        String formattedPrice = String.format("$%s", enUS.format(price));
+        if (formattedPrice.endsWith(".00")) {
+            int centsIndex = formattedPrice.lastIndexOf(".00");
+            if (centsIndex != -1) {
+                formattedPrice = formattedPrice.substring(1, centsIndex);
+            }
+        }
+        TextView priceView = (TextView) view.findViewById(R.id.dfprice);
+        priceView.setText(formattedPrice);
 
         ImageLoader imageLoader = ImageLoader.getInstance();
         DisplayImageOptions options = new DisplayImageOptions.Builder()

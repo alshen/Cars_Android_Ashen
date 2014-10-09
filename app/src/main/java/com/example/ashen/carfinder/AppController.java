@@ -6,8 +6,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+/**
+ * Singleton class to used manage network requests
+ */
 public class AppController {
 
+    // request queue
     private RequestQueue mRequestQueue;
 
     private static Context mContext;
@@ -18,6 +22,10 @@ public class AppController {
         mRequestQueue = getRequestQueue();
     }
 
+    /**
+     * @param context
+     * @return an instance of the AppController
+     */
     public static synchronized AppController getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new AppController(context);
@@ -25,6 +33,9 @@ public class AppController {
         return mInstance;
     }
 
+    /**
+     * @return the request queue
+     */
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(mContext);
@@ -33,6 +44,11 @@ public class AppController {
         return mRequestQueue;
     }
 
+    /**
+     * Appends a request to the request queue
+     * @param req the request to add
+     * @param <T> the type of the expected response
+     */
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }

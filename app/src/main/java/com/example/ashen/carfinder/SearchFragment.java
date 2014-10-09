@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO: this class needs to be refactored
+ * This fragment contains a search view, allowing users search for cars based on
+ * inputted search criteria
  */
 public class SearchFragment extends Fragment {
     @Override
@@ -44,6 +45,7 @@ public class SearchFragment extends Fragment {
         final EditText search_model = (EditText) view.findViewById(R.id.search_model);
         search_model.setInputType(InputType.TYPE_NULL);
 
+        // creates a selection dialog when the field is clicked
         search_make.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,6 +70,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        // creates a selection dialog when the field is clicked
         search_model.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +133,7 @@ public class SearchFragment extends Fragment {
 
                 SearchResultsFragment newFragment = new SearchResultsFragment();
 
+                // stores all the arguments that will be passed on for processing
                 Bundle args = new Bundle();
                 args.putString("make", make);
                 args.putString("model", model);
