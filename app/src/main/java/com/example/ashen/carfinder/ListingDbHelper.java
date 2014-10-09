@@ -35,7 +35,10 @@ public class ListingDbHelper extends SQLiteOpenHelper {
             ListingContract.ListingEntry.KEY_STANDARD_PRICE,
             ListingContract.ListingEntry.KEY_BEST,
             ListingContract.ListingEntry.KEY_WORST,
-            ListingContract.ListingEntry.KEY_STARRED
+            ListingContract.ListingEntry.KEY_STARRED,
+            // we rank by Asking Price - Standard Price so we alias this to RANKING
+            "( " + ListingContract.ListingEntry.KEY_ASKING_PRICE + "-" +
+                    ListingContract.ListingEntry.KEY_STANDARD_PRICE + " ) AS RANKING"
     };
 
     public ListingDbHelper(Context context) {
@@ -242,7 +245,7 @@ public class ListingDbHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query( ListingContract.ListingEntry.TABLE_NAME,
                                   PROJECTION_COLUMNS,
                                   null, null, null, null,
-                                  null );
+                                  "RANKING ASC" );
         List<CarListing> carListings = carListingsHelper(cursor);
 
         cursor.close();
@@ -266,7 +269,8 @@ public class ListingDbHelper extends SQLiteOpenHelper {
                                   PROJECTION_COLUMNS,
                                   ListingContract.ListingEntry.KEY_STARRED + "=?",
                                   new String[] { "1" },
-                                  null, null, null );
+                                  null, null,
+                                  "RANKING ASC" );
 
         List<CarListing> carListings = carListingsHelper(cursor);
 
@@ -359,7 +363,8 @@ public class ListingDbHelper extends SQLiteOpenHelper {
                                   WHERE.toString(),
                                   new String[] {Integer.toString(minPrice), Integer.toString(maxPrice),
                                                 Integer.toString(minYear), Integer.toString(maxYear)},
-                                  null, null, null );
+                                  null, null,
+                                  "RANKING ASC" );
 
         List<CarListing> carListings = carListingsHelper(cursor);
 
