@@ -36,6 +36,8 @@ public class Main extends Activity implements JsonLoader.OnTaskCompleted{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         // if the network is unavailable, inform the user and ask to turn on wifi
         // exit otherwise
         if (!isNetworkAvailable()) {
@@ -143,6 +145,21 @@ public class Main extends Activity implements JsonLoader.OnTaskCompleted{
             // Replace whatever is in the fragment_container view with this fragment,
             // and add the transaction to the back stack so the user can navigate back
             transaction.replace(R.id.container, newFragment, "fav_frag");
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();
+            return true;
+        } else if (id == android.R.id.home) {
+            ListingsFragment newFragment;
+            if (null == fragMgr.findFragmentByTag("main_frag")) {
+                newFragment = new FavoritesFragment();
+            } else {
+                newFragment = (ListingsFragment) fragMgr.findFragmentByTag("main_frag");
+            }
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack so the user can navigate back
+            transaction.replace(R.id.container, newFragment, "main_frag");
             transaction.addToBackStack(null);
 
             // Commit the transaction
