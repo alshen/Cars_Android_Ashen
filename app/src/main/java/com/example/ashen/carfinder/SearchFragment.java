@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,9 @@ import java.util.List;
  * inputted search criteria
  */
 public class SearchFragment extends Fragment {
+
+    ArrayList<String> mModels = null;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -32,7 +36,9 @@ public class SearchFragment extends Fragment {
         final List<String> makes = helper.getAllMakes();
         makes.add(0, "Any"); // insert the Any option
 
-        final List<String> models = new ArrayList<String>();
+        // Android reuses this instance when its added to the back stack, so we check that mModels
+        // hasn't been initialized already.
+        if (mModels == null) mModels = new ArrayList<String>();
 
         final EditText searchMake = (EditText) view.findViewById(R.id.search_make);
         searchMake.setInputType(InputType.TYPE_NULL);
@@ -55,9 +61,9 @@ public class SearchFragment extends Fragment {
                         searchMake.setText(items[which]);
                         // TODO: seems a bit hacky but the inner class requires the list to be final
                         // but the final keyword prevents reassignment
-                        models.clear();
-                        models.add("Any");
-                        models.addAll(helper.getAllModels(items[which].toString()));
+                        mModels.clear();
+                        mModels.add("Any");
+                        mModels.addAll(helper.getAllModels(items[which].toString()));
                         searchModel.setText("Any");
                     }
                 });
@@ -72,7 +78,7 @@ public class SearchFragment extends Fragment {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(v.getContext());
                 dialogBuilder.setCancelable(true);
                 dialogBuilder.setTitle("Select Model");
-                final CharSequence[] items = models.toArray(new CharSequence[models.size()]);
+                final CharSequence[] items = mModels.toArray(new CharSequence[mModels.size()]);
                 dialogBuilder.setItems(items, new DialogInterface.OnClickListener() {
 
                     @Override
