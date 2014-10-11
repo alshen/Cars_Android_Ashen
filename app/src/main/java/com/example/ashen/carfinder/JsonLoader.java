@@ -3,35 +3,17 @@ package com.example.ashen.carfinder;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.util.SparseArray;
-import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -99,7 +81,9 @@ public class JsonLoader {
                                 requestStandardPrice(uuid, make, model, year);
                             }
                         } catch (JSONException e) {
-
+                            // this probably happened because of some network error, or the
+                            // server produced some error, the UI should display "NO RESULTS"
+                            Log.e("JsonLoader", "Network Error: " + e.getMessage());
                         }
                         pDialog.hide();
                         mOnTaskCompletedCallback.onTaskCompleted();
@@ -108,7 +92,7 @@ public class JsonLoader {
 
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        // TODO: dialog
+                        Log.e("JsonLoader", "Network Error: " + volleyError.getMessage());
                     }
                 });
         AppController.getInstance(mContext).addToRequestQueue(jsonArrayRequest);
@@ -146,7 +130,7 @@ public class JsonLoader {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-
+                        Log.e("JsonLoader", "Network Error: Standard Price " + volleyError.getMessage());
                     }
                 });
         AppController.getInstance(mContext).addToRequestQueue(stringRequest);

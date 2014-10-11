@@ -4,19 +4,14 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.ListFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,14 +34,14 @@ public class SearchFragment extends Fragment {
 
         final List<String> models = new ArrayList<String>();
 
-        final EditText search_make = (EditText) view.findViewById(R.id.search_make);
-        search_make.setInputType(InputType.TYPE_NULL);
+        final EditText searchMake = (EditText) view.findViewById(R.id.search_make);
+        searchMake.setInputType(InputType.TYPE_NULL);
 
-        final EditText search_model = (EditText) view.findViewById(R.id.search_model);
-        search_model.setInputType(InputType.TYPE_NULL);
+        final EditText searchModel = (EditText) view.findViewById(R.id.search_model);
+        searchModel.setInputType(InputType.TYPE_NULL);
 
         // creates a selection dialog when the field is clicked
-        search_make.setOnClickListener(new View.OnClickListener() {
+        searchMake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(v.getContext());
@@ -57,13 +52,13 @@ public class SearchFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        search_make.setText(items[which]);
+                        searchMake.setText(items[which]);
                         // TODO: seems a bit hacky but the inner class requires the list to be final
                         // but the final keyword prevents reassignment
                         models.clear();
                         models.add("Any");
                         models.addAll(helper.getAllModels(items[which].toString()));
-                        search_model.setText("Any");
+                        searchModel.setText("Any");
                     }
                 });
                 dialogBuilder.show();
@@ -71,7 +66,7 @@ public class SearchFragment extends Fragment {
         });
 
         // creates a selection dialog when the field is clicked
-        search_model.setOnClickListener(new View.OnClickListener() {
+        searchModel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(v.getContext());
@@ -82,7 +77,7 @@ public class SearchFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        search_model.setText(items[which]);
+                        searchModel.setText(items[which]);
                     }
                 });
                 dialogBuilder.show();
@@ -93,15 +88,15 @@ public class SearchFragment extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText search_min_price = (EditText) view.findViewById(R.id.search_price_min);
-                EditText search_max_price = (EditText) view.findViewById(R.id.search_price_max);
+                EditText searchMinPrice = (EditText) view.findViewById(R.id.search_price_min);
+                EditText searchMaxPrice = (EditText) view.findViewById(R.id.search_price_max);
 
                 //set the min/max price to either their value or 0 if they are empty
-                String minPriceString = search_min_price.getText().toString();
-                String maxPriceString = search_max_price.getText().toString();
+                String minPriceString = searchMinPrice.getText().toString();
+                String maxPriceString = searchMaxPrice.getText().toString();
 
                 int minPrice = minPriceString.isEmpty()?  0 : Integer.parseInt(minPriceString);
-                int maxPrice = maxPriceString.isEmpty()?  0: Integer.parseInt(maxPriceString);
+                int maxPrice = maxPriceString.isEmpty()?  999999999 : Integer.parseInt(maxPriceString);
 
                 if (minPrice > maxPrice) {
                     Toast.makeText(view.getContext(), "Minimum Price must be lower than Maximum Price",
@@ -109,15 +104,15 @@ public class SearchFragment extends Fragment {
                     return;
                 }
 
-                EditText search_min_year = (EditText) view.findViewById(R.id.search_year_min);
-                EditText search_max_year = (EditText) view.findViewById(R.id.search_year_max);
+                EditText searchMinYear = (EditText) view.findViewById(R.id.search_year_min);
+                EditText searchMaxYear = (EditText) view.findViewById(R.id.search_year_max);
 
                 //set the min/max year to either their value or 0 if they are empty
-                String minYearString = search_min_year.getText().toString();
-                String maxYearString = search_max_year.getText().toString();
+                String minYearString = searchMinYear.getText().toString();
+                String maxYearString = searchMaxYear.getText().toString();
 
                 int minYear = minYearString.isEmpty()?  0 : Integer.parseInt(minYearString);
-                int maxYear = maxYearString.isEmpty()?  0: Integer.parseInt(maxYearString);
+                int maxYear = maxYearString.isEmpty()?  9999 : Integer.parseInt(maxYearString);
 
                 if (minYear > maxYear) {
                     Toast.makeText(view.getContext(), "Minimum Year must be lower than Maximum Year",
@@ -125,8 +120,8 @@ public class SearchFragment extends Fragment {
                     return;
                 }
 
-                String make  = search_make.getText().toString();
-                String model = search_model.getText().toString();
+                String make  = searchMake.getText().toString();
+                String model = searchModel.getText().toString();
 
                 FragmentManager fragMgr = getFragmentManager();
                 FragmentTransaction transaction = fragMgr.beginTransaction();

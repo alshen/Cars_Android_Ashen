@@ -2,6 +2,7 @@ package com.example.ashen.carfinder;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,12 @@ public class ListingDetailsFragment extends Fragment {
         String uuid = getArguments().getString("uuid");
 
         CarListing carListing = helper.getCarListing(uuid);
+        if (carListing == null) {
+            // this should be a very rare case, the uuid should have been retrieved from a list
+            // item which was associated with an entry in the database
+            Log.e("ListingDetailsFragment", "CarListing was NULL");
+            return view;
+        }
 
         TextView title = (TextView) view.findViewById(R.id.dftitle);
         title.setText(carListing.getYear() + " " + carListing.getMake() + " " + carListing.getModel());
