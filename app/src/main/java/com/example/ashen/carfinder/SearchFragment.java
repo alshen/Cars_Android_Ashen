@@ -43,7 +43,10 @@ public class SearchFragment extends Fragment {
 
         // Android reuses this instance when its added to the back stack, so we check that mModels
         // hasn't been initialized already.
-        if (mModels == null) mModels = new ArrayList<String>();
+        if (mModels == null) {
+            mModels = new ArrayList<String>();
+            mModels.add("Any");
+        }
 
         final EditText searchMake = (EditText) view.findViewById(R.id.search_make);
         searchMake.setInputType(InputType.TYPE_NULL);
