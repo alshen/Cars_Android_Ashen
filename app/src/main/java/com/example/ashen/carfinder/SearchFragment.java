@@ -24,6 +24,11 @@ import java.util.List;
  */
 public class SearchFragment extends Fragment {
 
+    private static final int SEARCH_MIN_PRICE = 0;
+    private static final int SEARCH_MAX_PRICE = 999999999;
+    private static final int SEARCH_MIN_YEAR  = 0;
+    private static final int SEARCH_MAX_YEAR  = 9999;
+
     ArrayList<String> mModels = null;
 
     @Override
@@ -101,8 +106,8 @@ public class SearchFragment extends Fragment {
                 String minPriceString = searchMinPrice.getText().toString();
                 String maxPriceString = searchMaxPrice.getText().toString();
 
-                int minPrice = minPriceString.isEmpty()?  0 : Integer.parseInt(minPriceString);
-                int maxPrice = maxPriceString.isEmpty()?  999999999 : Integer.parseInt(maxPriceString);
+                int minPrice = minPriceString.isEmpty()?  SEARCH_MIN_PRICE : Integer.parseInt(minPriceString);
+                int maxPrice = maxPriceString.isEmpty()?  SEARCH_MAX_PRICE : Integer.parseInt(maxPriceString);
 
                 if (minPrice > maxPrice) {
                     Toast.makeText(view.getContext(), "Minimum Price must be lower than Maximum Price",
@@ -117,8 +122,8 @@ public class SearchFragment extends Fragment {
                 String minYearString = searchMinYear.getText().toString();
                 String maxYearString = searchMaxYear.getText().toString();
 
-                int minYear = minYearString.isEmpty()?  0 : Integer.parseInt(minYearString);
-                int maxYear = maxYearString.isEmpty()?  9999 : Integer.parseInt(maxYearString);
+                int minYear = minYearString.isEmpty()?  SEARCH_MIN_YEAR : Integer.parseInt(minYearString);
+                int maxYear = maxYearString.isEmpty()?  SEARCH_MAX_YEAR : Integer.parseInt(maxYearString);
 
                 if (minYear > maxYear) {
                     Toast.makeText(view.getContext(), "Minimum Year must be lower than Maximum Year",
