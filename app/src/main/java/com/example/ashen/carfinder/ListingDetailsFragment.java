@@ -45,11 +45,11 @@ public class ListingDetailsFragment extends Fragment {
             return mView;
         }
 
-        mTitle = (TextView) mView.findViewById(R.id.dftitle);
+        mTitle = (TextView) mView.findViewById(R.id.details_fragment_title);
         mTitle.setText(carListing.getYear() + " " + carListing.getMake() + " " + carListing.getModel());
 
         int price = carListing.getAskingPrice();
-        mPrice = (TextView) mView.findViewById(R.id.dfprice);
+        mPrice = (TextView) mView.findViewById(R.id.details_fragment_price);
         mPrice.setText(getFormattedPrice(price));
 
         ImageLoader imageLoader = ImageLoader.getInstance();
@@ -62,21 +62,21 @@ public class ListingDetailsFragment extends Fragment {
                 .showImageOnLoading(R.drawable.default_image).build();
 
         //initialize image view
-        mImage = (ImageView) mView.findViewById(R.id.dfimage);
+        mImage = (ImageView) mView.findViewById(R.id.details_fragment_image);
 
         //download and display image from url
         imageLoader.displayImage(carListing.getImage(), mImage, options);
 
         // Make textView
-        mMake = (TextView) mView.findViewById(R.id.dft1);
+        mMake = (TextView) mView.findViewById(R.id.details_fragment_make_value);
         mMake.setText(carListing.getMake());
 
         // Model textView
-        mModel = (TextView) mView.findViewById(R.id.dft3);
+        mModel = (TextView) mView.findViewById(R.id.details_fragment_model_value);
         mModel.setText(carListing.getModel());
 
         // Description textView
-        mDescription = (TextView) mView.findViewById(R.id.dfdescription);
+        mDescription = (TextView) mView.findViewById(R.id.details_fragment_description);
         mDescription.setText(carListing.getDescription());
 
         return mView;

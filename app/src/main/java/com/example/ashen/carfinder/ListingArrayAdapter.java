@@ -63,13 +63,13 @@ public class ListingArrayAdapter extends ArrayAdapter {
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.listing_item, null);
+            view = inflater.inflate(R.layout.list_item, null);
 
             holder.title = (TextView) view.findViewById(R.id.list_item_title);
             holder.description = (TextView) view.findViewById(R.id.list_item_description);
             holder.price = (TextView) view.findViewById(R.id.list_item_price);
             holder.starred = (CheckBox) view.findViewById(R.id.list_item_starred_checkbox);
-            holder.image = (ImageView) view.findViewById(R.id.list_image);
+            holder.image = (ImageView) view.findViewById(R.id.list_item_image);
             view.setTag(holder);
 
         } else {

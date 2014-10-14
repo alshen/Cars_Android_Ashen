@@ -11,7 +11,7 @@
         android:padding="10dp">
 
 
-        <LinearLayout android:id="@+id/details_thumbnail"
+        <LinearLayout android:id="@+id/details_fragment_thumbnail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -20,7 +20,7 @@
             android:background="@drawable/image_bg">
 
             <ImageView
-                android:id="@+id/dfimage"
+                android:id="@+id/details_fragment_image"
                 android:layout_width="150dip"
                 android:layout_height="150dip"
                 android:scaleType="centerCrop"
@@ -29,21 +29,21 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/dftitle"
+            android:id="@+id/details_fragment_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="2000 Ford Tarus"
-            android:layout_toRightOf="@id/details_thumbnail"
+            android:layout_toRightOf="@id/details_fragment_thumbnail"
             android:textStyle="normal"
             android:padding="8dp"
             android:textSize="20sp"/>
 
         <TextView
-            android:id="@+id/dfprice"
+            android:id="@+id/details_fragment_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/details_thumbnail"
-            android:layout_below="@id/dftitle"
+            android:layout_toRightOf="@id/details_fragment_thumbnail"
+            android:layout_below="@id/details_fragment_title"
             android:textColor="@android:color/holo_red_dark"
             android:textStyle="bold"
             android:textSize="18sp"
@@ -53,197 +53,197 @@
             android:text="$20,1111"/>
 
         <TextView
-            android:id="@+id/spec_label"
+            android:id="@+id/details_fragment_spec_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/details_thumbnail"
+            android:layout_below="@id/details_fragment_thumbnail"
             android:layout_marginBottom="2dp"
             android:textColor="@android:color/holo_blue_light"
             style="@style/AppTheme"
             android:text="SPECIFICATIONS"/>
         <View
-            android:id="@+id/spec_label_sep"
+            android:id="@+id/details_fragment_spec_label_sep"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="5dp"
-            android:layout_below="@id/spec_label"
+            android:layout_below="@id/details_fragment_spec_label"
             android:background="@android:color/holo_blue_light"/>
 
         <LinearLayout
-            android:id="@+id/dfr1"
+            android:id="@+id/details_fragment_r1"
             android:layout_marginBottom="2dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/spec_label_sep">
+            android:layout_below="@id/details_fragment_spec_label_sep">
             <TextView
-                android:id="@+id/dfl1"
+                android:id="@+id/details_fragment_make"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Make"/>
             <TextView
-                android:id="@+id/dft1"
+                android:id="@+id/details_fragment_make_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
             <TextView
-                android:id="@+id/dfl2"
+                android:id="@+id/details_fragment_transmission"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Transmission"/>
             <TextView
-                android:id="@+id/dft2"
+                android:id="@+id/details_fragment_transmission_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/dfr2"
+            android:id="@+id/details_fragment_r2"
             android:layout_marginBottom="2dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/dfr1">
+            android:layout_below="@id/details_fragment_r1">
             <TextView
-                android:id="@+id/dfl3"
+                android:id="@+id/details_fragment_model"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Model"/>
             <TextView
-                android:id="@+id/dft3"
+                android:id="@+id/details_fragment_model_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
             <TextView
-                android:id="@+id/dfl4"
+                android:id="@+id/details_fragment_exterior"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Exterior"/>
             <TextView
-                android:id="@+id/dft4"
+                android:id="@+id/details_fragment_exterior_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/dfr3"
+            android:id="@+id/details_fragment_r3"
             android:layout_marginBottom="2dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/dfr2">
+            android:layout_below="@id/details_fragment_r2">
             <TextView
-                android:id="@+id/dfl5"
+                android:id="@+id/details_fragment_km"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Kilometres"/>
             <TextView
-                android:id="@+id/dft5"
+                android:id="@+id/details_fragment_km_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
             <TextView
-                android:id="@+id/dfl6"
+                android:id="@+id/details_fragment_interior"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Interior"/>
             <TextView
-                android:id="@+id/dft6"
+                android:id="@+id/details_fragment_interior_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/dfr4"
+            android:id="@+id/details_fragment_r4"
             android:layout_marginBottom="2dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/dfr3">
+            android:layout_below="@id/details_fragment_r3">
             <TextView
-                android:id="@+id/dfl7"
+                android:id="@+id/details_fragment_engine"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Engine"/>
             <TextView
-                android:id="@+id/dft7"
+                android:id="@+id/details_fragment_engine_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
             <TextView
-                android:id="@+id/dfl8"
+                android:id="@+id/details_fragment_passengers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Passengers"/>
             <TextView
-                android:id="@+id/dft8"
+                android:id="@+id/details_fragment_passengers_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/dfr5"
+            android:id="@+id/details_fragment_r5"
             android:layout_marginBottom="2dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/dfr4">
+            android:layout_below="@id/details_fragment_r4">
             <TextView
-                android:id="@+id/dfl9"
+                android:id="@+id/details_fragment_cylinders"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Cylinders"/>
             <TextView
-                android:id="@+id/dft9"
+                android:id="@+id/details_fragment_cylinders_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
             <TextView
-                android:id="@+id/dfl10"
+                android:id="@+id/details_fragment_doors"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Doors"/>
             <TextView
-                android:id="@+id/dft10"
+                android:id="@+id/details_fragment_doors_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/dfr6"
+            android:id="@+id/details_fragment_r6"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/dfr5"
+            android:layout_below="@id/details_fragment_r5"
             android:layout_marginBottom="25dp">
             <TextView
-                android:id="@+id/dfl11"
+                android:id="@+id/details_fragment_stock"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:text="Stock #"/>
             <TextView
-                android:id="@+id/dft11"
+                android:id="@+id/details_fragment_stock_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -262,27 +262,27 @@
                 android:text="-"/>
         </LinearLayout>
         <TextView
-            android:id="@+id/description_label"
+            android:id="@+id/details_fragment_description_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/dfr6"
+            android:layout_below="@id/details_fragment_r6"
             android:layout_marginBottom="2dp"
             android:textColor="@android:color/holo_blue_light"
 
             style="@style/AppTheme"
             android:text="DESCRIPTION"/>
         <View
-            android:id="@+id/description_label_sep"
+            android:id="@+id/details_fragment_description_label_sep"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="5dp"
-            android:layout_below="@id/description_label"
+            android:layout_below="@id/details_fragment_description_label"
             android:background="@android:color/holo_blue_light"/>
         <TextView
-            android:id="@+id/dfdescription"
+            android:id="@+id/details_fragment_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/description_label_sep"
+            android:layout_below="@id/details_fragment_description_label_sep"
             android:text="Description"/>
 
     </RelativeLayout>
