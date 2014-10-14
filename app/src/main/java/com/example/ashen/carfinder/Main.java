@@ -51,7 +51,6 @@ public class Main extends Activity implements JsonLoader.OnTaskCompleted{
                 }
             });
             dialog.show();
-            return;
         }
 
         if (savedInstanceState == null) {
@@ -79,10 +78,11 @@ public class Main extends Activity implements JsonLoader.OnTaskCompleted{
         ImageLoader.getInstance().init(config);
         // END - UNIVERSAL IMAGE LOADER SETUP
 
-        // TODO: We really shouldn't need to do this, but because of the way the JSON API is set up
-        // we clear and re populate the database every time
+        // TODO: find a better way to do this: we want to do this first just to make sure we have
+        // at least an empty database to work with. In case the application is installed without
+        // a network connection or some previous setup failed, we just want to show no results.
         ListingDbHelper helper = new ListingDbHelper(this);
-        //helper.clear();
+        helper.getReadableDatabase();
 
         JsonLoader json = new JsonLoader(this, this);
         json.loadDatabase();
