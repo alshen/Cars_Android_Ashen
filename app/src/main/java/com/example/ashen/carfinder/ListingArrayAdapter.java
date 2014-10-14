@@ -93,15 +93,7 @@ public class ListingArrayAdapter extends ArrayAdapter {
             // TODO: Further localization and considering rounding is the API should provide non
             // whole numbers
             int price = carListing.getAskingPrice();
-            NumberFormat enUS = NumberFormat.getCurrencyInstance(Locale.US);
-            String formattedPrice = String.format("$%s", enUS.format(price));
-            if (formattedPrice.endsWith(".00")) {
-                int centsIndex = formattedPrice.lastIndexOf(".00");
-                if (centsIndex != -1) {
-                    formattedPrice = formattedPrice.substring(1, centsIndex);
-                }
-            }
-            holder.price.setText(formattedPrice);
+            holder.price.setText(getFormattedPrice(price));
 
             //VITAL PART!!! Set the state of the CheckBox using the boolean array
             holder.starred.setChecked(mCheckBoxState[position]);
@@ -154,6 +146,20 @@ public class ListingArrayAdapter extends ArrayAdapter {
         }
 
         return view;
+    }
+
+    private static String getFormattedPrice(int price) {
+        NumberFormat enUS = NumberFormat.getCurrencyInstance(Locale.US);
+        String formattedPrice = String.format("$%s", enUS.format(price));
+
+        if (formattedPrice.endsWith(".00")) {
+            int centsIndex = formattedPrice.lastIndexOf(".00");
+            if (centsIndex != -1) {
+                formattedPrice = formattedPrice.substring(1, centsIndex);
+            }
+        }
+
+        return formattedPrice;
     }
 
     /**

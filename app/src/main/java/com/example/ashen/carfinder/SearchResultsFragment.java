@@ -10,6 +10,13 @@ import android.widget.ListView;
 import java.util.List;
 
 public class SearchResultsFragment extends ListingsFragment {
+    private static final String KEY_MAKE      = "make";
+    private static final String KEY_MODEL     = "model";
+    private static final String KEY_MIN_YEAR  = "minYear";
+    private static final String KEY_MAX_YEAR  = "maxYear";
+    private static final String KEY_MIN_PRICE = "minPrice";
+    private static final String KEY_MAX_PRICE = "maxPrice";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -17,12 +24,12 @@ public class SearchResultsFragment extends ListingsFragment {
                 container, false);
         ListingDbHelper helper = new ListingDbHelper(view.getContext());
 
-        String make  = getArguments().getString("make");
-        String model = getArguments().getString("model");
-        int minPrice = getArguments().getInt("minPrice");
-        int maxPrice = getArguments().getInt("maxPrice");
-        int minYear  = getArguments().getInt("minYear");
-        int maxYear  = getArguments().getInt("maxYear");
+        String make  = getArguments().getString(KEY_MAKE);
+        String model = getArguments().getString(KEY_MODEL);
+        int minPrice = getArguments().getInt(KEY_MIN_YEAR);
+        int maxPrice = getArguments().getInt(KEY_MAX_YEAR);
+        int minYear  = getArguments().getInt(KEY_MIN_PRICE);
+        int maxYear  = getArguments().getInt(KEY_MAX_PRICE);
 
         List<CarListing> carListings = helper.getCarListings( make, model, minPrice, maxPrice,
                 minYear, maxYear );

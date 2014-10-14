@@ -19,36 +19,38 @@ import java.util.Locale;
  * Class representing the detailed view of a CarListing
  */
 public class ListingDetailsFragment extends Fragment {
+    private static final String KEY_UUID = "uuid";
+
+    private View mView;
+    private TextView mTitle;
+    private TextView mPrice;
+    private TextView mMake;
+    private TextView mModel;
+    private TextView mDescription;
+    private ImageView mImage;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.details_fragment,
+        mView = inflater.inflate(R.layout.details_fragment,
                 container, false);
-        ListingDbHelper helper = new ListingDbHelper(view.getContext());
-        String uuid = getArguments().getString("uuid");
+        ListingDbHelper helper = new ListingDbHelper(mView.getContext());
+        String uuid = getArguments().getString(KEY_UUID);
 
         CarListing carListing = helper.getCarListing(uuid);
         if (carListing == null) {
             // this should be a very rare case, the uuid should have been retrieved from a list
             // item which was associated with an entry in the database
             Log.e("ListingDetailsFragment", "CarListing was NULL");
-            return view;
+            return mView;
         }
 
-        TextView title = (TextView) view.findViewById(R.id.dftitle);
-        title.setText(carListing.getYear() + " " + carListing.getMake() + " " + carListing.getModel());
+        mTitle = (TextView) mView.findViewById(R.id.dftitle);
+        mTitle.setText(carListing.getYear() + " " + carListing.getMake() + " " + carListing.getModel());
 
         int price = carListing.getAskingPrice();
-        NumberFormat enUS = NumberFormat.getCurrencyInstance(Locale.US);
-        String formattedPrice = String.format("$%s", enUS.format(price));
-        if (formattedPrice.endsWith(".00")) {
-            int centsIndex = formattedPrice.lastIndexOf(".00");
-            if (centsIndex != -1) {
-                formattedPrice = formattedPrice.substring(1, centsIndex);
-            }
-        }
-        TextView priceView = (TextView) view.findViewById(R.id.dfprice);
-        priceView.setText(formattedPrice);
+        mPrice = (TextView) mView.findViewById(R.id.dfprice);
+        mPrice.setText(getFormattedPrice(price));
 
         ImageLoader imageLoader = ImageLoader.getInstance();
         DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -60,23 +62,37 @@ public class ListingDetailsFragment extends Fragment {
                 .showImageOnLoading(R.drawable.default_image).build();
 
         //initialize image view
-        ImageView imageView = (ImageView) view.findViewById(R.id.dfimage);
+        mImage = (ImageView) mView.findViewById(R.id.dfimage);
 
         //download and display image from url
-        imageLoader.displayImage(carListing.getImage(), imageView, options);
+        imageLoader.displayImage(carListing.getImage(), mImage, options);
 
         // Make textView
-        TextView make = (TextView) view.findViewById(R.id.dft1);
-        make.setText(carListing.getMake());
+        mMake = (TextView) mView.findViewById(R.id.dft1);
+        mMake.setText(carListing.getMake());
 
         // Model textView
-        TextView model = (TextView) view.findViewById(R.id.dft3);
-        model.setText(carListing.getModel());
+        mModel = (TextView) mView.findViewById(R.id.dft3);
+        mModel.setText(carListing.getModel());
 
         // Description textView
-        TextView description = (TextView) view.findViewById(R.id.dfdescription);
-        description.setText(carListing.getDescription());
+        mDescription = (TextView) mView.findViewById(R.id.dfdescription);
+        mDescription.setText(carListing.getDescription());
 
-        return view;
+        return mView;
+    }
+
+    private static String getFormattedPrice(int price) {
+        NumberFormat enUS = NumberFormat.getCurrencyInstance(Locale.US);
+        String formattedPrice = String.format("$%s", enUS.format(price));
+
+        if (formattedPrice.endsWith(".00")) {
+            int centsIndex = formattedPrice.lastIndexOf(".00");
+            if (centsIndex != -1) {
+                formattedPrice = formattedPrice.substring(1, centsIndex);
+            }
+        }
+
+        return formattedPrice;
     }
 }

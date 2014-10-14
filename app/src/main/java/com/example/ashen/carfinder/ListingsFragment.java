@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 public class ListingsFragment extends ListFragment implements ListingArrayAdapter.OnClickListener,
     ListingArrayAdapter.OnCheckedChangedListener {
+    private static final String KEY_UUID = "uuid";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,7 +42,7 @@ public class ListingsFragment extends ListFragment implements ListingArrayAdapte
 
         ListingDetailsFragment newFragment = new ListingDetailsFragment();
         Bundle args = new Bundle();
-        args.putString("uuid", uuid);
+        args.putString(KEY_UUID, uuid);
         newFragment.setArguments(args);
 
         // Replace whatever is in the container view with this fragment,
