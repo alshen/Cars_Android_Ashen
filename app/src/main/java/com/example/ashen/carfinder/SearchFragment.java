@@ -88,105 +88,105 @@ public class SearchFragment extends Fragment {
     private final OnClickListener mMakeOnClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(v.getContext());
-            dialogBuilder.setCancelable(true);
-            dialogBuilder.setTitle("Select Make");
-            final CharSequence[] items = mMakes.toArray(new CharSequence[mMakes.size()]);
-            dialogBuilder.setItems(items, new DialogInterface.OnClickListener() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(v.getContext());
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.setTitle("Select Make");
+        final CharSequence[] items = mMakes.toArray(new CharSequence[mMakes.size()]);
+        dialogBuilder.setItems(items, new DialogInterface.OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mMake.setText(items[which]);
-                    // TODO: seems a bit hacky but the inner class requires the list to be final
-                    // but the final keyword prevents reassignment
-                    mModels.clear();
-                    mModels.add("Any");
-                    mModels.addAll(mHelper.getAllModels(items[which].toString()));
-                    mModel.setText("Any");
-                }
-            });
-            dialogBuilder.show();
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mMake.setText(items[which]);
+                // TODO: seems a bit hacky but the inner class requires the list to be final
+                // but the final keyword prevents reassignment
+                mModels.clear();
+                mModels.add("Any");
+                mModels.addAll(mHelper.getAllModels(items[which].toString()));
+                mModel.setText("Any");
+            }
+        });
+        dialogBuilder.show();
         }
     };
 
     private final OnClickListener mModelOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(v.getContext());
-            dialogBuilder.setCancelable(true);
-            dialogBuilder.setTitle("Select Model");
-            final CharSequence[] items = mModels.toArray(new CharSequence[mModels.size()]);
-            dialogBuilder.setItems(items, new DialogInterface.OnClickListener() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(v.getContext());
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.setTitle("Select Model");
+        final CharSequence[] items = mModels.toArray(new CharSequence[mModels.size()]);
+        dialogBuilder.setItems(items, new DialogInterface.OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mModel.setText(items[which]);
-                }
-            });
-            dialogBuilder.show();
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mModel.setText(items[which]);
+            }
+        });
+        dialogBuilder.show();
         }
     };
 
     private final OnClickListener mSearchOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            mMinPrice = (EditText) mView.findViewById(R.id.search_price_min);
-            mMaxPrice = (EditText) mView.findViewById(R.id.search_price_max);
+        mMinPrice = (EditText) mView.findViewById(R.id.search_price_min);
+        mMaxPrice = (EditText) mView.findViewById(R.id.search_price_max);
 
-            //set the min/max price to either their value or 0 if they are empty
-            String minPriceString = mMinPrice.getText().toString();
-            String maxPriceString = mMaxPrice.getText().toString();
+        //set the min/max price to either their value or 0 if they are empty
+        String minPriceString = mMinPrice.getText().toString();
+        String maxPriceString = mMaxPrice.getText().toString();
 
-            int minPrice = minPriceString.isEmpty()?  SEARCH_MIN_PRICE : Integer.parseInt(minPriceString);
-            int maxPrice = maxPriceString.isEmpty()?  SEARCH_MAX_PRICE : Integer.parseInt(maxPriceString);
+        int minPrice = minPriceString.isEmpty()?  SEARCH_MIN_PRICE : Integer.parseInt(minPriceString);
+        int maxPrice = maxPriceString.isEmpty()?  SEARCH_MAX_PRICE : Integer.parseInt(maxPriceString);
 
-            if (minPrice > maxPrice) {
-                Toast.makeText(mView.getContext(), "Minimum Price must be lower than Maximum Price",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
+        if (minPrice > maxPrice) {
+            Toast.makeText(mView.getContext(), "Minimum Price must be lower than Maximum Price",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            mMinYear = (EditText) mView.findViewById(R.id.search_year_min);
-            mMaxYear = (EditText) mView.findViewById(R.id.search_year_max);
+        mMinYear = (EditText) mView.findViewById(R.id.search_year_min);
+        mMaxYear = (EditText) mView.findViewById(R.id.search_year_max);
 
-            //set the min/max year to either their value or 0 if they are empty
-            String minYearString = mMinYear.getText().toString();
-            String maxYearString = mMaxYear.getText().toString();
+        //set the min/max year to either their value or 0 if they are empty
+        String minYearString = mMinYear.getText().toString();
+        String maxYearString = mMaxYear.getText().toString();
 
-            int minYear = minYearString.isEmpty()?  SEARCH_MIN_YEAR : Integer.parseInt(minYearString);
-            int maxYear = maxYearString.isEmpty()?  SEARCH_MAX_YEAR : Integer.parseInt(maxYearString);
+        int minYear = minYearString.isEmpty()?  SEARCH_MIN_YEAR : Integer.parseInt(minYearString);
+        int maxYear = maxYearString.isEmpty()?  SEARCH_MAX_YEAR : Integer.parseInt(maxYearString);
 
-            if (minYear > maxYear) {
-                Toast.makeText(mView.getContext(), "Minimum Year must be lower than Maximum Year",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
+        if (minYear > maxYear) {
+            Toast.makeText(mView.getContext(), "Minimum Year must be lower than Maximum Year",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            String make  = mMake.getText().toString();
-            String model = mModel.getText().toString();
+        String make  = mMake.getText().toString();
+        String model = mModel.getText().toString();
 
-            FragmentManager fragMgr = getFragmentManager();
-            FragmentTransaction transaction = fragMgr.beginTransaction();
+        FragmentManager fragMgr = getFragmentManager();
+        FragmentTransaction transaction = fragMgr.beginTransaction();
 
-            SearchResultsFragment newFragment = new SearchResultsFragment();
+        SearchResultsFragment newFragment = new SearchResultsFragment();
 
-            // stores all the arguments that will be passed on for processing
-            Bundle args = new Bundle();
-            args.putString(KEY_MAKE, make);
-            args.putString(KEY_MODEL, model);
-            args.putInt(KEY_MIN_PRICE, minPrice);
-            args.putInt(KEY_MAX_PRICE, maxPrice);
-            args.putInt(KEY_MIN_YEAR, minYear);
-            args.putInt(KEY_MAX_YEAR, maxYear);
-            newFragment.setArguments(args);
+        // stores all the arguments that will be passed on for processing
+        Bundle args = new Bundle();
+        args.putString(KEY_MAKE, make);
+        args.putString(KEY_MODEL, model);
+        args.putInt(KEY_MIN_PRICE, minPrice);
+        args.putInt(KEY_MAX_PRICE, maxPrice);
+        args.putInt(KEY_MIN_YEAR, minYear);
+        args.putInt(KEY_MAX_YEAR, maxYear);
+        newFragment.setArguments(args);
 
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
-            transaction.replace(R.id.container, newFragment, "search_results_frag");
-            transaction.addToBackStack(null);
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.replace(R.id.container, newFragment, "search_results_frag");
+        transaction.addToBackStack(null);
 
-            // Commit the transaction
-            transaction.commit();
+        // Commit the transaction
+        transaction.commit();
         }
     };
 }

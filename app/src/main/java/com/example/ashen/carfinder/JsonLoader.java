@@ -67,43 +67,43 @@ public class JsonLoader {
     private final Response.Listener mJsonArrayResponseListener = new Response.Listener<JSONArray>() {
         @Override
         public void onResponse(JSONArray response) {
-            try {
-                for (int i = 0; i < response.length(); i++) {
-                    JSONObject jObj = response.getJSONObject(i);
+        try {
+            for (int i = 0; i < response.length(); i++) {
+                JSONObject jObj = response.getJSONObject(i);
 
-                    String uuid        = UUID.randomUUID().toString();
+                String uuid        = UUID.randomUUID().toString();
 
-                    String make        = jObj.getString(KEY_MAKE);
-                    String model       = jObj.getString(KEY_MODEL);
-                    String image       = jObj.getString(KEY_IMAGE);
-                    String description = jObj.getString(KEY_DESCRIPTION);
+                String make        = jObj.getString(KEY_MAKE);
+                String model       = jObj.getString(KEY_MODEL);
+                String image       = jObj.getString(KEY_IMAGE);
+                String description = jObj.getString(KEY_DESCRIPTION);
 
-                    int year           = jObj.getInt(KEY_YEAR);
-                    int askingPrice    = jObj.getInt(KEY_PRICE);
+                int year           = jObj.getInt(KEY_YEAR);
+                int askingPrice    = jObj.getInt(KEY_PRICE);
 
-                    // TODO: these a hard coded to false because the queries take too long
-                    // and the information is of little value at the moment
-                    // boolean bestInYear = false;//requestBestInYear(make, model, year);
-                    // boolean worstInYear = false;//requestWorstInYear(make, model, year);
+                // TODO: these a hard coded to false because the queries take too long
+                // and the information is of little value at the moment
+                // boolean bestInYear = false;//requestBestInYear(make, model, year);
+                // boolean worstInYear = false;//requestWorstInYear(make, model, year);
 
-                    // Insert the new row
-                    CarListing carListing = new CarListing(uuid, make, model, image,
-                            description, year, askingPrice, 0, false, false, false);
-                    mCarsDbHelper.addCarListing(carListing);
+                // Insert the new row
+                CarListing carListing = new CarListing(uuid, make, model, image,
+                        description, year, askingPrice, 0, false, false, false);
+                mCarsDbHelper.addCarListing(carListing);
 
-                    // the standard price is updated asynchronously, this way we can
-                    // perform multiple requests at a time
-                    // TODO: the initial rankings may be off depending on when updates
-                    // are completed
-                    requestStandardPrice(uuid, make, model, year);
-                }
-            } catch (JSONException e) {
-                // this probably happened because of some network error, or the
-                // server produced some error, the UI should display "NO RESULTS"
-                Log.e("JsonLoader", "Network Error: " + e.getMessage());
+                // the standard price is updated asynchronously, this way we can
+                // perform multiple requests at a time
+                // TODO: the initial rankings may be off depending on when updates
+                // are completed
+                requestStandardPrice(uuid, make, model, year);
             }
-            mProgressDialog.hide();
-            mOnTaskCompletedCallback.onTaskCompleted();
+        } catch (JSONException e) {
+            // this probably happened because of some network error, or the
+            // server produced some error, the UI should display "NO RESULTS"
+            Log.e("JsonLoader", "Network Error: " + e.getMessage());
+        }
+        mProgressDialog.hide();
+        mOnTaskCompletedCallback.onTaskCompleted();
         }
     };
 

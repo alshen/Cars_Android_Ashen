@@ -26,20 +26,20 @@ public class ListingDbHelper extends SQLiteOpenHelper {
 
     // query constants
     private static final String[] PROJECTION_CAR_LISTING = {
-            ListingEntry.KEY_UUID,
-            ListingEntry.KEY_MAKE,
-            ListingEntry.KEY_MODEL,
-            ListingEntry.KEY_IMAGE,
-            ListingEntry.KEY_DESCRIPTION,
-            ListingEntry.KEY_YEAR,
-            ListingEntry.KEY_ASKING_PRICE,
-            ListingEntry.KEY_STANDARD_PRICE,
-            ListingEntry.KEY_BEST,
-            ListingEntry.KEY_WORST,
-            ListingEntry.KEY_STARRED,
-            // we rank by Asking Price - Standard Price so we alias this to RANKING
-            "( " + ListingEntry.KEY_ASKING_PRICE + "-" +
-                    ListingEntry.KEY_STANDARD_PRICE + " ) AS RANKING"
+        ListingEntry.KEY_UUID,
+        ListingEntry.KEY_MAKE,
+        ListingEntry.KEY_MODEL,
+        ListingEntry.KEY_IMAGE,
+        ListingEntry.KEY_DESCRIPTION,
+        ListingEntry.KEY_YEAR,
+        ListingEntry.KEY_ASKING_PRICE,
+        ListingEntry.KEY_STANDARD_PRICE,
+        ListingEntry.KEY_BEST,
+        ListingEntry.KEY_WORST,
+        ListingEntry.KEY_STARRED,
+        // we rank by Asking Price - Standard Price so we alias this to RANKING
+        "( " + ListingEntry.KEY_ASKING_PRICE + "-" +
+                ListingEntry.KEY_STANDARD_PRICE + " ) AS RANKING"
     };
 
     public ListingDbHelper(Context context) {
@@ -59,19 +59,19 @@ public class ListingDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_TABLE =
                 "CREATE TABLE " + ListingEntry.TABLE_NAME + " (" +
-                        ListingEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEP +
-                        ListingEntry.KEY_UUID + TEXT_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_MAKE + TEXT_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_MODEL + TEXT_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_IMAGE + TEXT_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_YEAR + INTEGER_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_ASKING_PRICE + INTEGER_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_STANDARD_PRICE + INTEGER_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_BEST + INTEGER_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_WORST + INTEGER_TYPE + COMMA_SEP +
-                        ListingEntry.KEY_STARRED + INTEGER_TYPE +
-                        " )";
+                    ListingEntry._ID + " INTEGER PRIMARY KEY" + COMMA_SEP +
+                    ListingEntry.KEY_UUID + TEXT_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_MAKE + TEXT_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_MODEL + TEXT_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_IMAGE + TEXT_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_YEAR + INTEGER_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_ASKING_PRICE + INTEGER_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_STANDARD_PRICE + INTEGER_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_BEST + INTEGER_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_WORST + INTEGER_TYPE + COMMA_SEP +
+                    ListingEntry.KEY_STARRED + INTEGER_TYPE +
+                    " )";
 
         db.execSQL(SQL_CREATE_TABLE);
     }
